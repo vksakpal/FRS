@@ -425,6 +425,7 @@
     <Content Include="Views\Auth\LoginView.cshtml" />
     <Content Include="Views\Home\FaultListView.cshtml" />
     <Content Include="Views\FaultManagement\FaultListView.cshtml" />
+    <Content Include="Views\FaultManagement\FaultDetailsView.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

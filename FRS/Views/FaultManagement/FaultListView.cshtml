@@ -1,4 +1,10 @@
-﻿<table id="faultdetailsgrid" class="table table-bordered">
+﻿<div class="row form-group">
+    <div class="col-md-12 text-right" >
+        <button id="btnAddFault" type="button" class="btn btn-sm btn-primary">Add Fault Details</button>
+    </div>
+</div>
+
+<table id="faultdetailsgrid" class="table table-bordered">
     <thead>
         <tr>
             <th>Customer Name</th>
@@ -12,6 +18,10 @@
         </tr>
     </thead>
 </table>
+
+
+<div id="dvaddfault" class="modal fade" role="dialog">
+</div>
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -32,6 +42,31 @@
                 { "data": "FaultReportingDate" },
                 { "data": "FaultResolvedDate" }
             ]
+        });
+
+
+        $("#btnAddFault").click(function ()
+        {
+            $.ajax({
+                url: '@Url.Action("FaultDetailsView","FaultManagement")',
+                type: "GET",
+                data: {"faultId":0},
+                ContentType: "application/json",
+                cache:false,
+                success: function (html) {
+                    $("#dvaddfault").empty();
+                    $("#dvaddfault").html(html);
+                    $("#dvaddfault").modal({
+                        backdrop: 'static',
+                        keyboard: false,
+                        show: true
+                    });
+
+                },
+                error: function () {
+                    alert("Error occured while opening the fault details popup");
+                }
+            });
         });
     });
 </script>

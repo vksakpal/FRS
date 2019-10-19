@@ -32,12 +32,13 @@ namespace FRS.Controllers
             if(string.IsNullOrWhiteSpace(loginDetails?.UserID) || string.IsNullOrWhiteSpace(loginDetails.Password))
             {
                 ViewBag.ErrorMessage = "Please enter Username and password";
-                ViewBag.IsAuthenticated = false;
+                
                 return View("LoginView");
             }
                                
             if (!ValidateUser(loginDetails, HttpContext.Response))
             {
+                ViewBag.ErrorMessage = "Please enter valid Username and password";
                 return View("LoginView");
                 
             }
