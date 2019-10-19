@@ -135,6 +135,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\FRS.mdf" />
+    <Content Include="App_Data\FRS_log.ldf">
+      <DependentUpon>FRS.mdf</DependentUpon>
+    </Content>
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -409,7 +413,6 @@
     <Content Include="Views\Auth\LoginView.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Models\" />
     <Folder Include="Views\FaultManagement\" />
   </ItemGroup>
