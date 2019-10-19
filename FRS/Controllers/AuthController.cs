@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 using System.Web.Security;
 
 namespace FRS.Controllers
@@ -28,29 +29,59 @@ namespace FRS.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(LoginDetails loginDetails)
         {
-<<<<<<< HEAD
-
             if(string.IsNullOrWhiteSpace(loginDetails?.UserID) || string.IsNullOrWhiteSpace(loginDetails.Password))
             {
                 ViewBag.ErrorMessage = "Please enter Username and password";
                 ViewBag.IsAuthenticated = false;
                 return View("LoginView");
             }
-            FormsAuthentication.SetAuthCookie(loginDetails.UserID,false);
-            ViewBag.IsAuthenticated = true;
-=======
+                               
+            if (!ValidateUser(loginDetails, HttpContext.Response))
+            {
+                return View("LoginView");
+                
+            }
+           
+            return RedirectToAction("Index", "Home");
+        }
+
+        private  bool ValidateUser(LoginDetails loginDetails, HttpResponseBase response)
+        {
+            bool result = false;
             LoginBAL bal = new LoginBAL();
             UserDetails user = bal.Login(loginDetails);
-            if (user == null)
+            if (user != null)
             {
-                ViewBag.IsAuthenticated = false;
+                
+                var serializer = new JavaScriptSerializer();
+                
+                string userData = serializer.Serialize(user);
+                FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1,
+                        loginDetails.UserID,
+                        DateTime.Now,
+                        DateTime.Now.AddDays(30),
+                        true,
+                        userData,
+                        FormsAuthentication.FormsCookiePath);
+                // Encrypt the ticket.
+                string encTicket = FormsAuthentication.Encrypt(ticket);
+                // Create the cookie.
+                response.Cookies.Add(new HttpCookie(FormsAuthentication.FormsCookieName, encTicket));
+                result = true;
             }
-            else
-            {
-                ViewBag.IsAuthenticated = true;
-            }
->>>>>>> e0ea1025e1d07b084ec0b3a1ab5d8c34022f7a7b
-            return RedirectToAction("Index", "Home");
+            return result;
+        }
+
+        public ActionResult Logout()
+        {
+            Session.Abandon();
+            FormsAuthentication.SignOut();
+            
+            HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, "");
+            cookie.Expires = DateTime.Now.AddYears(-1);
+            HttpContext.Response.Cookies.Add(cookie);
+
+            return RedirectToAction("LoginView", "Auth");
         }
     }
 }

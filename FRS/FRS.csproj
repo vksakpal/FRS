@@ -126,14 +126,22 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Business Layer\FaultManagerBAL.cs" />
     <Compile Include="Business Layer\LoginBAL.cs" />
     <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="Controllers\FaultManagementController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="DAL\FaultManagerDAL.cs" />
     <Compile Include="DAL\LoginDAL.cs" />
+    <Compile Include="Filters\ValidationFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Mapper\FaultDetailsMapper.cs" />
+    <Compile Include="Models\FaultDetails.cs" />
+    <Compile Include="Models\LoginDetails.cs" />
+    <Compile Include="Models\MyPrinciple.cs" />
+    <Compile Include="Models\UserDetails.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -398,7 +406,9 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -414,11 +424,9 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Auth\LoginView.cshtml" />
     <Content Include="Views\Home\FaultListView.cshtml" />
+    <Content Include="Views\FaultManagement\FaultListView.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="Views\FaultManagement\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -431,12 +439,6 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FRS.Models\FRS.Models.csproj">
-      <Project>{75f4cbfb-8cfc-426b-bc8d-dd512b109777}</Project>
-      <Name>FRS.Models</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

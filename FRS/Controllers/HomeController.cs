@@ -11,7 +11,10 @@ namespace FRS.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.IsAuthenticated = true;
+            if(!HttpContext.User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("LoginView", "Auth");
+            }
             return View();
         }
 

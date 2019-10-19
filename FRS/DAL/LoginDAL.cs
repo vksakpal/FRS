@@ -1,6 +1,7 @@
 ﻿using FRS.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace FRS.DAL
             DataTable dt = new DataTable();
             try
             {
-                SqlConnection con = new SqlConnection(@"Data Source=.\SQLEXPRESS;AttachDbFilename=C:\Users\Administrator\Desktop\FRS\src\FRS\App_Data\FRS.mdf;Integrated Security=True;User Instance=True");
+                SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString);
                 SqlCommand cmd = new SqlCommand("Login", con)
                 {
                     CommandType = CommandType.StoredProcedure
@@ -23,7 +24,6 @@ namespace FRS.DAL
                 cmd.Parameters.AddWithValue("@userId", logindetails.UserID);
                 cmd.Parameters.AddWithValue("@password", logindetails.Password);
                 SqlDataAdapter sda = new SqlDataAdapter(cmd);
-                
                 sda.Fill(dt);
                 con.Open();
                 int i = cmd.ExecuteNonQuery();
