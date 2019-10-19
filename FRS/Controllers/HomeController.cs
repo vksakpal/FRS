@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace FRS.Controllers
 {
+    [RoutePrefix("Home")]
     public class HomeController : Controller
     {
         public ActionResult Index()
@@ -26,6 +27,12 @@ namespace FRS.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+
+        [Route("faultlist")]
+        public PartialViewResult GetFaultDetailsView()
+        {
+            return PartialView("FaultListView");
         }
     }
 }
