@@ -1,4 +1,5 @@
-﻿using FRS.Models;
+﻿using FRS.Business_Layer;
+using FRS.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,16 @@ namespace FRS.Controllers
         [HttpPost]
         public ActionResult Login(LoginDetails loginDetails)
         {
-            ViewBag.IsAuthenticated = true;
+            LoginBAL bal = new LoginBAL();
+            UserDetails user = bal.Login(loginDetails);
+            if (user == null)
+            {
+                ViewBag.IsAuthenticated = false;
+            }
+            else
+            {
+                ViewBag.IsAuthenticated = true;
+            }
             return RedirectToAction("Index", "Home");
         }
     }
