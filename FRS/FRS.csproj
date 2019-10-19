@@ -413,6 +413,7 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Auth\LoginView.cshtml" />
+    <Content Include="Views\Home\FaultListView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
