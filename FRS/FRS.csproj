@@ -137,6 +137,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Mapper\UserDetailsMapper.cs" />
     <Compile Include="Mapper\FaultDetailsMapper.cs" />
     <Compile Include="Models\FaultDetails.cs" />
     <Compile Include="Models\LoginDetails.cs" />

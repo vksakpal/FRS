@@ -14,19 +14,7 @@ namespace FRS.Business_Layer
         public UserDetails Login(LoginDetails loginDetails)
         {
             LoginDAL dal = new LoginDAL();
-            DataTable dt = dal.Login(loginDetails);
-            if (dt.Rows.Count > 0)
-            {
-                return new UserDetails()
-                {
-                    UserID = Convert.ToString(dt.Rows[0]["UserID"]),
-                    ID = Convert.ToInt16(dt.Rows[0]["ID"]),
-                    RoleID = Convert.ToInt16(dt.Rows[0]["RoleID"]),
-                };
-
-            }
-
-            return null;
+            return dal.Login(loginDetails);
         }
     }
 }

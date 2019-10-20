@@ -20,6 +20,7 @@ namespace FRS.Mapper
                     faultDetailsList.Add(new FaultDetails
                     {
                         FaultID = Convert.IsDBNull(dr["FaultID"]) ? 0: Convert.ToInt32(dr["FaultID"]),
+                        ProductID = Convert.IsDBNull(dr["ProductID"]) ? 0 : Convert.ToInt32(dr["ProductID"]),
                         ProductName = Convert.IsDBNull(dr["ProductName"]) ? string.Empty : Convert.ToString(dr["ProductName"]),
                         StatusID = Convert.IsDBNull(dr["StatusID"]) ? 0 : Convert.ToInt32(dr["StatusID"]),
                         StatusDescription = Convert.IsDBNull(dr["StatusDescription"]) ? string.Empty : Convert.ToString(dr["StatusDescription"]),

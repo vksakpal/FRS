@@ -12,7 +12,7 @@ namespace FRS.DAL
 {
     public class FaultManagerDAL
     {
-        public List<FaultDetails> GetFaultList(int status)
+        public List<FaultDetails> GetFaultList(int status,int roleId, int userId)
         {
             List<FaultDetails> faultDetailsList = new List<FaultDetails>();
             try
@@ -20,11 +20,13 @@ namespace FRS.DAL
                 using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString))
                 {
                     DataTable dt = new DataTable();
-                    SqlCommand cmd = new SqlCommand("FaultDetailsByStatus", con)
+                    SqlCommand cmd = new SqlCommand("GetFaultDetails", con)
                     {
                         CommandType = CommandType.StoredProcedure
                     };
                     cmd.Parameters.AddWithValue("@status", status);
+                    cmd.Parameters.AddWithValue("@roleID", roleId);
+                    cmd.Parameters.AddWithValue("@userID", userId);
                     SqlDataAdapter sda = new SqlDataAdapter(cmd);
                     sda.Fill(dt);
                     faultDetailsList = dt.MapFaultDetailsDataTableToCollection();
@@ -36,6 +38,39 @@ namespace FRS.DAL
 
             }
             return faultDetailsList;
+        }
+
+        public int AddFaultDetails(FaultDetails faultDetails)
+        {
+            int faultId = 0;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString))
+                {
+
+                    SqlCommand cmd = new SqlCommand("AddFaultDetails", con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    cmd.Parameters.AddWithValue("@productId", faultDetails.ProductID);
+                    cmd.Parameters.AddWithValue("@statusID", faultDetails.StatusID);
+                    cmd.Parameters.AddWithValue("@faultReportingDate", faultDetails.FaultReportingDate);
+                    cmd.Parameters.AddWithValue("@customerID", faultDetails.CustomerID);
+                    cmd.Parameters.AddWithValue("@faultTypeID", faultDetails.FaultTypeID);
+                    cmd.Parameters.AddWithValue("@faultDescription", faultDetails.FaultDescription);
+                    cmd.Parameters.AddWithValue("@id", faultDetails.StatusID);
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    faultId = Convert.ToInt16(cmd.Parameters["@id"].Value);
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return faultId;
         }
     }
 }

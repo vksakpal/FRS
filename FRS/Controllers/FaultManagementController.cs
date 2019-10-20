@@ -37,11 +37,19 @@ namespace FRS.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetFaultList(int status)
+        public JsonResult GetFaultList(int status, int roleId, int userId)
         {
             FaultManagerBAL bal = new FaultManagerBAL();
-            List<FaultDetails> faultList = bal.GetFaultList(status);
+            List<FaultDetails> faultList = bal.GetFaultList(status,roleId,userId);
             return Json(new { data = faultList }, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public int AddFaultDetails(FaultDetails faultDetails)
+        {
+            FaultManagerBAL bal = new FaultManagerBAL();
+            return bal.AddFaultDetails(faultDetails);
+        }
+
     }
 }

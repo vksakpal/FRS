@@ -8,6 +8,7 @@ namespace FRS.Models
     public class FaultDetails
     {
         public int FaultID { get; set; }
+        public int ProductID { get; set; }
         public string ProductName { get; set; }
         public int StatusID { get; set; }
         public string StatusDescription { get; set; }
