@@ -54,11 +54,14 @@ namespace FRS.DAL
                     };
                     cmd.Parameters.AddWithValue("@productId", faultDetails.ProductID);
                     cmd.Parameters.AddWithValue("@statusID", faultDetails.StatusID);
-                    cmd.Parameters.AddWithValue("@faultReportingDate", faultDetails.FaultReportingDate);
-                    cmd.Parameters.AddWithValue("@customerID", faultDetails.CustomerID);
+                    cmd.Parameters.AddWithValue("@faultReportingDate", DateTime.Now);                    
                     cmd.Parameters.AddWithValue("@faultTypeID", faultDetails.FaultTypeID);
-                    cmd.Parameters.AddWithValue("@faultDescription", faultDetails.FaultDescription);
-                    cmd.Parameters.AddWithValue("@id", faultDetails.StatusID);
+                    cmd.Parameters.AddWithValue("@faultDescription", faultDetails.FaultDescription);                    
+                    cmd.Parameters.AddWithValue("@CustomerName", faultDetails.CustomerInfo.Name);
+                    cmd.Parameters.AddWithValue("@Phone", faultDetails.CustomerInfo.Phone);
+                    cmd.Parameters.AddWithValue("@Email", faultDetails.CustomerInfo.Email);
+                    cmd.Parameters.Add("@Id", SqlDbType.Int);
+                    cmd.Parameters["@Id"].Direction = ParameterDirection.Output;
                     con.Open();
                     cmd.ExecuteNonQuery();
                     faultId = Convert.ToInt16(cmd.Parameters["@id"].Value);

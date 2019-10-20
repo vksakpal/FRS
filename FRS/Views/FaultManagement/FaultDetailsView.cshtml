@@ -1,4 +1,6 @@
-﻿<div class="modal-dialog" role="document">
+﻿@model FRS.Models.FaultDetails
+
+<div class="modal-dialog" role="document">
     @*@using (Html.BeginForm())
     {*@
         <div class="modal-content">
@@ -18,19 +20,26 @@
                 <div class="form-group row">
                     <label for="staticEmail" class="col-sm-4 col-form-label">Name:</label>
                     <div class="col-sm-8">
-                        <input type="text" readonly class="form-control" id="txtCustomerName" value="">
+                        @Html.TextBoxFor(model => model.CustomerInfo.Name, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="staticEmail" class="col-sm-4 col-form-label">Email:</label>
                     <div class="col-sm-8">
-                        <input type="text" readonly class="form-control" id="txtCustomerName" value="">
+                        @Html.TextBoxFor(model => model.CustomerInfo.Email, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="staticEmail" class="col-sm-4 col-form-label">Phone:</label>
                     <div class="col-sm-8">
-                        <input type="text" readonly class="form-control" id="txtCustomerName" value="">
+                        @Html.TextBoxFor(model => model.CustomerInfo.Phone, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="staticEmail" class="col-sm-4 col-form-label">Address:</label>
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(model => model.CustomerInfo.Address, new { @class = "form-control" })
                     </div>
                 </div>
 
@@ -39,31 +48,39 @@
                         <span>Fault Details</span>
                     </div>
                 </div>
+
                 <div class="form-group row">
                     <label for="staticEmail" class="col-sm-4 col-form-label">Product Name:</label>
                     <div class="col-sm-8">
-                        <input type="text" readonly class="form-control" id="txtCustomerName" value="">
+                        @Html.DropDownListFor(model => model.StatusID, Model.FaultStatusList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultStatusList, "Value", "Text"), "--Select--", new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="staticEmail" class="col-sm-4 col-form-label">Product Name:</label>
+                    <div class="col-sm-8">
+                        @Html.DropDownListFor(model => model.ProductID, Model.ProductList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.ProductList, "Value", "Text"), "--Select--", new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="staticEmail" class="col-sm-4 col-form-label">Fault Type:</label>
                     <div class="col-sm-8">
-                        <input type="text" readonly class="form-control" id="txtCustomerName" value="">
+                        @Html.DropDownListFor(model => model.FaultTypeID, Model.FaultTypeList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultTypeList, "Value", "Text"), "--Select--", new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="staticEmail" class="col-sm-4 col-form-label">Fault Description:</label>
                     <div class="col-sm-8">
-                        <input type="text" readonly class="form-control" id="txtCustomerName" value="">
+                        @Html.TextAreaFor(model => model.FaultTypeDescription, 10, 10, new { @class = "form-control" })
                     </div>
                 </div>
 
 
-               
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Add Fault</button>
+                <button type="button" class="btn btn-primary" id="btnAddFaultPopup">Add Fault</button>
             </div>
         </div>
     @*//}*@
@@ -73,5 +90,42 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('.collapse').collapse();
+
+        $("#btnAddFaultPopup").click(function () {
+            debugger;
+            var faultDetails = {
+                "CustomerInfo": {
+                    "Name": $("#CustomerInfo_Name").val(),
+                    "Phone": $("#CustomerInfo_Phone").val(),
+                    "Email": $("#CustomerInfo_Email").val()
+                },
+                "FaultDescription": $("#FaultTypeDescription").val(),
+                "ProductID": $("#ProductID option:selected").val(),
+                "FaultTypeID": $("#FaultTypeID option:selected").val(),
+                "StatusID":$("#StatusID option:selected").val()
+            };
+
+            $.ajax({
+                url: '@Url.Action("AddFaultDetails","FaultManagement")',
+                ContentType: "application/json",
+                type: "POST",
+                data: faultDetails,
+                success: function (data) {
+                    if (data == 2) {
+                        $("#dvaddfault").modal("hide");
+                        $("#faultdetailsgrid").DataTable().ajax.reload();
+                    }
+                    else {
+                        alert("Error occured while saving the fault details");
+                    }
+                },
+                error: function () {
+                    alert("Error occured while saving the fault details");
+                }
+            });
+        });
     });
+
+
+    
 </script>

@@ -25,6 +25,8 @@ namespace FRS.Controllers
         [HttpGet]
         public PartialViewResult FaultDetailsView(int faultId)
         {
+            FaultDetails faultDetails = new FaultDetails();
+            CommonBAL bal = new CommonBAL();
             if(faultId > 0)
             {
                 ViewBag.ModalTitle = "Update Fault";
@@ -33,23 +35,54 @@ namespace FRS.Controllers
             {
                 ViewBag.ModalTitle = "Add Fault";
             }
-            return PartialView("FaultDetailsView");
-        }
 
-        [HttpGet]
-        public JsonResult GetFaultList(int status, int roleId, int userId)
-        {
-            FaultManagerBAL bal = new FaultManagerBAL();
-            List<FaultDetails> faultList = bal.GetFaultList(status,roleId,userId);
-            return Json(new { data = faultList }, JsonRequestBehavior.AllowGet);
+            faultDetails.ProductList = bal.GetProductList();
+            faultDetails.FaultTypeList = bal.GetFaultTypeList();
+            faultDetails.FaultStatusList = bal.GetFaultStatusList();
+            faultDetails.StatusID = Convert.ToInt32( faultDetails.FaultStatusList.Where(x => x.Text.ToLower() == "new").Select(x => x.Value).FirstOrDefault());
+            return PartialView("FaultDetailsView", faultDetails);
         }
 
         [HttpPost]
-        public int AddFaultDetails(FaultDetails faultDetails)
+        public JsonResult AddFaultDetails(FaultDetails faultDetails)
         {
-            FaultManagerBAL bal = new FaultManagerBAL();
-            return bal.AddFaultDetails(faultDetails);
+            int result = 0;
+
+            if(faultDetails == null)
+            {
+                result = 1;
+            }
+
+            try
+            {
+                FaultManagerBAL bal = new FaultManagerBAL();
+                bal.AddFaultDetails(faultDetails);
+                result = 2;
+            }
+            catch(Exception ex)
+            {
+                result = 3;
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+
         }
+
+        [HttpGet]
+        public JsonResult GetFaultList(int status)
+        {
+            List<FaultDetails> faultList = new List<FaultDetails>();
+
+            if (HttpContext.User != null)
+            {
+                UserDetails userDetails = ((MyPrincipal)HttpContext.User).User;
+                FaultManagerBAL bal = new FaultManagerBAL();
+                 faultList = bal.GetFaultList(status, userDetails.RoleID, userDetails.ID);
+                
+            }
+            return Json(new { data = faultList }, JsonRequestBehavior.AllowGet);
+        }
+                
 
     }
 }

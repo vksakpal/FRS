@@ -27,12 +27,16 @@ namespace FRS.Mapper
                         UserID = Convert.IsDBNull(dr["UserID"]) ? string.Empty : Convert.ToString(dr["UserID"]),
                         AssignedUserID = Convert.IsDBNull(dr["AssignedUserID"]) ? 0 : Convert.ToInt32(dr["AssignedUserID"]),
                         FaultReportingDate = Convert.IsDBNull(dr["FaultReportingDate"]) ? string.Empty : string.Format("{0: dd/MM/yyyy}", Convert.ToDateTime(dr["FaultReportingDate"])),
-                        CustomerID = Convert.IsDBNull(dr["CustomerID"]) ? 0 : Convert.ToInt32(dr["CustomerID"]),
+                        CustomerInfo = new Customer
+                        {
+                            ID = Convert.IsDBNull(dr["CustomerID"]) ? 0 : Convert.ToInt32(dr["CustomerID"]),
+                            Name = Convert.IsDBNull(dr["CustomerName"]) ? string.Empty : Convert.ToString(dr["CustomerName"])
+                        },
                         FaultResolvedDate = Convert.IsDBNull(dr["FaultResolvedDate"]) ? string.Empty : string.Format("{0: dd/MM/yyyy}", Convert.ToDateTime(dr["FaultResolvedDate"])),
                         FaultTypeID = Convert.IsDBNull(dr["FaultTypeID"]) ? 0 : Convert.ToInt32(dr["FaultTypeID"]),
                         FaultDescription = Convert.IsDBNull(dr["FaultDescription"]) ? string.Empty : Convert.ToString(dr["FaultDescription"]),
                         FaultTypeDescription = Convert.IsDBNull(dr["FaultTypeDescription"]) ? string.Empty : Convert.ToString(dr["FaultTypeDescription"]),
-                        CustomerName = Convert.IsDBNull(dr["CustomerName"]) ? string.Empty : Convert.ToString(dr["CustomerName"])
+                        
                     });
                 }
             }

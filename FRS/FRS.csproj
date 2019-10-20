@@ -126,19 +126,23 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Business Layer\CommonBAL.cs" />
     <Compile Include="Business Layer\FaultManagerBAL.cs" />
     <Compile Include="Business Layer\LoginBAL.cs" />
     <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="Controllers\FaultManagementController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="DAL\CommonDAL.cs" />
     <Compile Include="DAL\FaultManagerDAL.cs" />
     <Compile Include="DAL\LoginDAL.cs" />
     <Compile Include="Filters\ValidationFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Mapper\CommonMapper.cs" />
     <Compile Include="Mapper\UserDetailsMapper.cs" />
     <Compile Include="Mapper\FaultDetailsMapper.cs" />
+    <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\FaultDetails.cs" />
     <Compile Include="Models\LoginDetails.cs" />
     <Compile Include="Models\MyPrinciple.cs" />
