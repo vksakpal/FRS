@@ -15,6 +15,12 @@ namespace FRS.Business_Layer
             return dal.GetFaultList(status,roleId,userID);
         }
 
+        public FaultDetails GetFaultListByFaultId(int faultId)
+        {
+            FaultManagerDAL dal = new FaultManagerDAL();
+            return dal.GetFaultListByFaultID(faultId);
+        }
+
         public int AddFaultDetails(FaultDetails faultDetails)
         {
             FaultManagerDAL dal = new FaultManagerDAL();

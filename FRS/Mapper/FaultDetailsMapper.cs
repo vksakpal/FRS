@@ -12,7 +12,6 @@ namespace FRS.Mapper
         public static List<FaultDetails> MapFaultDetailsDataTableToCollection(this DataTable dt)
         {
             List<FaultDetails> faultDetailsList = new List<FaultDetails>();
-            DateTime? dtnull = null;
             if(dt!= null && dt.Rows.Count > 0)
             {
                 foreach(DataRow dr in dt.Rows)
@@ -30,7 +29,9 @@ namespace FRS.Mapper
                         CustomerInfo = new Customer
                         {
                             ID = Convert.IsDBNull(dr["CustomerID"]) ? 0 : Convert.ToInt32(dr["CustomerID"]),
-                            Name = Convert.IsDBNull(dr["CustomerName"]) ? string.Empty : Convert.ToString(dr["CustomerName"])
+                            Name = Convert.IsDBNull(dr["CustomerName"]) ? string.Empty : Convert.ToString(dr["CustomerName"]),
+                            Email = Convert.IsDBNull(dr["Email"]) ? string.Empty : Convert.ToString(dr["Email"]),
+                            Phone = Convert.IsDBNull(dr["Phone"]) ? string.Empty : Convert.ToString(dr["Phone"]),
                         },
                         FaultResolvedDate = Convert.IsDBNull(dr["FaultResolvedDate"]) ? string.Empty : string.Format("{0: dd/MM/yyyy}", Convert.ToDateTime(dr["FaultResolvedDate"])),
                         FaultTypeID = Convert.IsDBNull(dr["FaultTypeID"]) ? 0 : Convert.ToInt32(dr["FaultTypeID"]),

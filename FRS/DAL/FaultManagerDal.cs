@@ -105,5 +105,31 @@ namespace FRS.DAL
                 throw ex;
             }
         }
+
+        public FaultDetails GetFaultListByFaultID(int faultId)
+        {
+            List<FaultDetails> faultDetailsList = new List<FaultDetails>();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString))
+                {
+                    DataTable dt = new DataTable();
+                    SqlCommand cmd = new SqlCommand("GetFaultDetails", con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    cmd.Parameters.AddWithValue("@faultId", faultId);
+                    SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                    sda.Fill(dt);
+                    faultDetailsList = dt.MapFaultDetailsDataTableToCollection();
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return faultDetailsList.FirstOrDefault();
+        }
     }
 }
