@@ -17,10 +17,10 @@
             <th>Fault Description</th>
             <th>Product Name</th>
             <th>Status</th>
-            <th>Assigned User</th>
             <th>Reoprted Date</th>
             <th>Resolved Date</th>
             <th>Fault Priority</th>
+            <th>Assigned User</th>
             <th></th>
         </tr>
     </thead>
@@ -40,7 +40,6 @@
             { "data": "FaultDescription" },
             { "data": "ProductName" },
             { "data": "StatusDescription" },
-            { "data": "UserID" },
             { "data": "FaultReportingDate" },
             { "data": "FaultResolvedDate" },
             {
@@ -61,6 +60,7 @@
         ];
 
         if ('@userDetails.RoleID' == "1") {
+            columns.push({ "data": "UserID" });
             columns.push({
 
                 "data": null, render: function (data) {
@@ -69,6 +69,11 @@
             });
         }
         else if ('@userDetails.RoleID' == "3") {
+            columns.push({
+                "data": null, render: function (data) {
+                    
+                }
+                });
             columns.push({
                 "data": null, render: function (data) {
                     return "<button class='btn btn-default btnview' data-faultid=" + data.FaultID + ">View</button>";

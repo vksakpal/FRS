@@ -88,7 +88,7 @@ namespace FRS.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    cmd.Parameters.AddWithValue("@faultID", faultDetails.ProductID);
+                    cmd.Parameters.AddWithValue("@faultID", faultDetails.FaultID);
                     cmd.Parameters.AddWithValue("@productId", faultDetails.ProductID);
                     cmd.Parameters.AddWithValue("@statusID", faultDetails.StatusID);
                     cmd.Parameters.AddWithValue("@faultResolvedDate", faultDetails.FaultResolvedDate == null ? (object)DBNull.Value : Convert.ToDateTime(faultDetails.FaultResolvedDate));

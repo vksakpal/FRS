@@ -1,4 +1,5 @@
-﻿using FRS.Models;
+﻿using FRS.DAL;
+using FRS.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +12,7 @@ namespace FRS.Mapper
     {
         public static List<FaultDetails> MapFaultDetailsDataTableToCollection(this DataTable dt)
         {
-            List<FaultDetails> faultDetailsList = new List<FaultDetails>();
+            List<FaultDetails> faultDetailsList = new List<FaultDetails>();            
             if(dt!= null && dt.Rows.Count > 0)
             {
                 foreach(DataRow dr in dt.Rows)
