@@ -122,7 +122,21 @@ namespace FRS.Controllers
             }
             return Json(new { data = faultList }, JsonRequestBehavior.AllowGet);
         }
-                
+
+        [HttpGet]
+        public JsonResult GetFaultListByFaultID(int faultId)
+        {
+            FaultDetails faultDetail = new FaultDetails();
+
+            if (HttpContext.User != null)
+            {
+                FaultManagerBAL bal = new FaultManagerBAL();
+                faultDetail = bal.GetFaultListByFaultId(faultId);
+
+            }
+            return Json(new { data = faultDetail }, JsonRequestBehavior.AllowGet);
+        }
+
 
     }
 }
