@@ -86,5 +86,32 @@ namespace FRS.DAL
             }
             return statusList;
         }
+
+        public List<SelectListItem> GetListOfDevelopersByManagerId(int managerId)
+        {
+            List<SelectListItem> developerList = new List<SelectListItem>();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString))
+                {
+                    DataTable dt = new DataTable();
+                    SqlCommand cmd = new SqlCommand("GetDeveloperListByManagerId", con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    cmd.Parameters.AddWithValue("@managerId", managerId);
+                    SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                    sda.Fill(dt);
+                    developerList = dt.MapDeveloperDataTableToCollection();
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return developerList;
+        }
+
     }
 }

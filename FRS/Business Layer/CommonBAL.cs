@@ -26,5 +26,11 @@ namespace FRS.Business_Layer
             CommonDAL dal = new CommonDAL();
             return dal.GetFaultStatusList();
         }
+
+        public List<SelectListItem> GetListOfDevelopersByManagerId(int managerId)
+        {
+            CommonDAL dal = new CommonDAL();
+            return dal.GetListOfDevelopersByManagerId(managerId);
+        }
     }
 }

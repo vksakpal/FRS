@@ -72,5 +72,26 @@ namespace FRS.Mapper
 
             return faultTypeList;
         }
+
+        public static List<SelectListItem> MapDeveloperDataTableToCollection(this DataTable dt)
+        {
+            List<SelectListItem> developerList = new List<SelectListItem>();
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    developerList.Add(new SelectListItem
+                    {
+
+                        Value = Convert.IsDBNull(dr["ID"]) ? string.Empty : Convert.ToString(dr["ID"]),
+                        Text = Convert.IsDBNull(dr["UserID"]) ? string.Empty : Convert.ToString(dr["UserID"]),
+
+                    });
+                }
+            }
+
+            return developerList;
+        }
     }
 }
