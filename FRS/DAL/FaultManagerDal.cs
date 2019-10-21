@@ -91,7 +91,7 @@ namespace FRS.DAL
                     cmd.Parameters.AddWithValue("@faultID", faultDetails.ProductID);
                     cmd.Parameters.AddWithValue("@productId", faultDetails.ProductID);
                     cmd.Parameters.AddWithValue("@statusID", faultDetails.StatusID);
-                    cmd.Parameters.AddWithValue("@faultResolvedDate", faultDetails.FaultResolvedDate);
+                    cmd.Parameters.AddWithValue("@faultResolvedDate", faultDetails.FaultResolvedDate == null ? (object)DBNull.Value : Convert.ToDateTime(faultDetails.FaultResolvedDate));
                     cmd.Parameters.AddWithValue("@faultTypeID", faultDetails.FaultTypeID);
                     cmd.Parameters.AddWithValue("@faultDescription", faultDetails.FaultDescription);
                     cmd.Parameters.AddWithValue("@faultPriority", faultDetails.FaultPriorityID);

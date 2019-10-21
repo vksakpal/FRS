@@ -17,6 +17,7 @@
                 </div>
             </div>
             <div class="form-group row">
+                @Html.HiddenFor(model => model.FaultID)
                 <label for="staticEmail" class="col-sm-4 col-form-label">Name:</label>
                 <div class="col-sm-8">
                     @if (Model.FaultID == 0)
@@ -140,7 +141,7 @@
         $('.collapse').collapse();
 
         $("#btnAddFaultPopup").click(function () {
-            debugger;
+            
             var faultDetails = {
                 "CustomerInfo": {
                     "Name": $("#CustomerInfo_Name").val(),
@@ -163,6 +164,38 @@
                     if (data.result == 2) {
                         $("#dvaddfault").modal("hide");
                         alert("Fault details have been saved successfully. Your Request number: " + data.faultId);
+                        $("#faultdetailsgrid").DataTable().ajax.reload();
+                    }
+                    else {
+                        alert("Error occured while saving the fault details");
+                    }
+                },
+                error: function () {
+                    alert("Error occured while saving the fault details");
+                }
+            });
+        });
+
+        $("#btnUpdateFaultPopup").click(function () {
+            var faultDetails = {
+                "FaultID": $("#FaultID").val(),
+                "FaultDescription": $("#FaultTypeDescription").val(),
+                "ProductID": $("#ProductID option:selected").val(),
+                "FaultTypeID": $("#FaultTypeID option:selected").val(),
+                "StatusID": $("#StatusID option:selected").val(),
+                "FaultPriorityID": $("#FaultPriorityID option:selected").val(),
+                "FaultResolvedDate": $("#FaultResolvedDate").val()
+            };
+
+            $.ajax({
+                url: '@Url.Action("UpdateFaultDetails", "FaultManagement")',
+                ContentType: "application/json",
+                type: "POST",
+                data: faultDetails,
+                success: function (data) {
+                    if (data.result == 2) {
+                        $("#dvaddfault").modal("hide");
+                        alert("Request Number: " + '@Model.FaultID' + " Fault details have been saved successfully.");
                         $("#faultdetailsgrid").DataTable().ajax.reload();
                     }
                     else {
