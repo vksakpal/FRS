@@ -39,6 +39,19 @@ namespace FRS.Controllers
             faultDetails.ProductList = bal.GetProductList();
             faultDetails.FaultTypeList = bal.GetFaultTypeList();
             faultDetails.FaultStatusList = bal.GetFaultStatusList();
+            faultDetails.FaultPriorityList = new List<SelectListItem>
+            {
+                new SelectListItem
+                {
+                    Value = "1",
+                    Text = "Minor"
+                },
+                new SelectListItem
+                {
+                    Value = "2",
+                    Text = "Major"
+                }
+            };
             faultDetails.StatusID = Convert.ToInt32( faultDetails.FaultStatusList.Where(x => x.Text.ToLower() == "new").Select(x => x.Value).FirstOrDefault());
             return PartialView("FaultDetailsView", faultDetails);
         }
@@ -47,6 +60,7 @@ namespace FRS.Controllers
         public JsonResult AddFaultDetails(FaultDetails faultDetails)
         {
             int result = 0;
+            int faultId = 0;
 
             if(faultDetails == null)
             {
@@ -56,7 +70,7 @@ namespace FRS.Controllers
             try
             {
                 FaultManagerBAL bal = new FaultManagerBAL();
-                bal.AddFaultDetails(faultDetails);
+                faultId = bal.AddFaultDetails(faultDetails);
                 result = 2;
             }
             catch(Exception ex)
@@ -64,7 +78,7 @@ namespace FRS.Controllers
                 result = 3;
             }
 
-            return Json(result, JsonRequestBehavior.AllowGet);
+            return Json(new { result ,faultId}, JsonRequestBehavior.AllowGet);
 
         }
 

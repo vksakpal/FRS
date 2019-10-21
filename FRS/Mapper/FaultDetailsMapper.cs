@@ -36,8 +36,7 @@ namespace FRS.Mapper
                         FaultTypeID = Convert.IsDBNull(dr["FaultTypeID"]) ? 0 : Convert.ToInt32(dr["FaultTypeID"]),
                         FaultDescription = Convert.IsDBNull(dr["FaultDescription"]) ? string.Empty : Convert.ToString(dr["FaultDescription"]),
                         FaultTypeDescription = Convert.IsDBNull(dr["FaultTypeDescription"]) ? string.Empty : Convert.ToString(dr["FaultTypeDescription"]),
-                        
-                    });
+                        FaultPriorityID = Convert.IsDBNull(dr["FaultPriority"]) ? 0 : Convert.ToInt32(dr["FaultPriority"])                    });
                 }
             }
 

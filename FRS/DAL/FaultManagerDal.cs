@@ -60,6 +60,7 @@ namespace FRS.DAL
                     cmd.Parameters.AddWithValue("@CustomerName", faultDetails.CustomerInfo.Name);
                     cmd.Parameters.AddWithValue("@Phone", faultDetails.CustomerInfo.Phone);
                     cmd.Parameters.AddWithValue("@Email", faultDetails.CustomerInfo.Email);
+                    cmd.Parameters.AddWithValue("@faultPriority", faultDetails.FaultPriorityID);
                     cmd.Parameters.Add("@Id", SqlDbType.Int);
                     cmd.Parameters["@Id"].Direction = ParameterDirection.Output;
                     con.Open();
