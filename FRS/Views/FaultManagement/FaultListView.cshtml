@@ -1,4 +1,8 @@
-﻿<div class="row form-group">
+﻿@{ 
+    var userDetails = ((FRS.Models.MyPrincipal)HttpContext.Current.User).User;
+}
+
+<div class="row form-group">
     <div class="col-md-12 text-right" >
         <button id="btnAddFault" type="button" class="btn btn-sm btn-primary">Add Fault Details</button>
     </div>
@@ -7,6 +11,7 @@
 <table id="faultdetailsgrid" class="table table-bordered">
     <thead>
         <tr>
+            <th>Request Number</th>
             <th>Customer Name</th>
             <th>Fault Type</th>
             <th>Fault Description</th>
@@ -15,6 +20,8 @@
             <th>Assigned User</th>
             <th>Reoprted Date</th>
             <th>Resolved Date</th>
+            <th>Fault Priority</th>
+            <th></th>
         </tr>
     </thead>
 </table>
@@ -26,22 +33,57 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
+        var columns = [
+            { "data": "FaultID" },
+            { "data": "CustomerInfo.Name" },
+            { "data": "FaultTypeDescription" },
+            { "data": "FaultDescription" },
+            { "data": "ProductName" },
+            { "data": "StatusDescription" },
+            { "data": "UserID" },
+            { "data": "FaultReportingDate" },
+            { "data": "FaultResolvedDate" },
+            {
+                "data": null,
+                "render": function (data, type, row) {
+                    debugger;
+                    if (data.FaultPriorityID == 1) {
+                        return "<span>Minor</span>";
+                    }
+                    else if (data.FaultPriorityID == 2) {
+                        return "<span>Major</span>";
+                    }
+                    else {
+                        return "<span>NA</span>";
+                    }
+                }
+            }
+        ];
+
+        if ('@userDetails.RoleID' == "1") {
+            columns.push({
+
+                "data": null, render: function (data) {
+                    return "<button class='btn btn-default btnupdate' data-faultid=" + data.FaultID + ">Update</button>";
+                }
+            });
+        }
+        else if ('@userDetails.RoleID' == "3") {
+            columns.push({
+                "data": null, render: function (data) {
+                    return "<button class='btn btn-default btnupdate' data-faultid=" + data.FaultID + ">View</button>";
+                }
+            });
+        }
+        
+
         $("#faultdetailsgrid").DataTable({
             ajax: {
                 url: "@Url.Action("GetFaultList","FaultManagement")",
                 type: "GET",
                 data: { "status": 1 }
             },
-            columns: [
-                { "data": "CustomerInfo.Name" },
-                { "data": "FaultTypeDescription" },
-                { "data": "FaultDescription" },
-                { "data": "ProductName" },
-                { "data": "StatusDescription" },
-                { "data": "UserID" },
-                { "data": "FaultReportingDate" },
-                { "data": "FaultResolvedDate" }
-            ]
+            columns: columns
         });
 
 
