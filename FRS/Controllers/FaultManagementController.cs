@@ -26,11 +26,12 @@ namespace FRS.Controllers
         public PartialViewResult FaultDetailsView(int faultId)
         {
             FaultDetails faultDetails = new FaultDetails();
+            FaultManagerBAL fmBal = new FaultManagerBAL();
             CommonBAL bal = new CommonBAL();
             if(faultId > 0)
             {
                 ViewBag.ModalTitle = "Update Fault";
-                faultDetails.FaultID = faultId;
+                faultDetails = fmBal.GetFaultListByFaultId(faultId);
             }
             else
             {
@@ -53,7 +54,11 @@ namespace FRS.Controllers
                     Text = "Major"
                 }
             };
-            faultDetails.StatusID = Convert.ToInt32( faultDetails.FaultStatusList.Where(x => x.Text.ToLower() == "new").Select(x => x.Value).FirstOrDefault());
+            if(faultId ==0 )
+            {
+                faultDetails.StatusID = Convert.ToInt32(faultDetails.FaultStatusList.Where(x => x.Text.ToLower() == "new").Select(x => x.Value).FirstOrDefault());
+            }
+            
             return PartialView("FaultDetailsView", faultDetails);
         }
 

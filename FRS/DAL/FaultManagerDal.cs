@@ -115,7 +115,7 @@ namespace FRS.DAL
                 using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString))
                 {
                     DataTable dt = new DataTable();
-                    SqlCommand cmd = new SqlCommand("GetFaultDetails", con)
+                    SqlCommand cmd = new SqlCommand("FaultDetailsByFaultID", con)
                     {
                         CommandType = CommandType.StoredProcedure
                     };
