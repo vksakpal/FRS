@@ -76,5 +76,35 @@ namespace FRS.DAL
             }
             return faultId;
         }
+
+        public void UpdateFaultDetails(FaultDetails faultDetails)
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString))
+                {
+
+                    SqlCommand cmd = new SqlCommand("UpdateFaultDetails", con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    cmd.Parameters.AddWithValue("@faultID", faultDetails.ProductID);
+                    cmd.Parameters.AddWithValue("@productId", faultDetails.ProductID);
+                    cmd.Parameters.AddWithValue("@statusID", faultDetails.StatusID);
+                    cmd.Parameters.AddWithValue("@faultResolvedDate", faultDetails.FaultResolvedDate);
+                    cmd.Parameters.AddWithValue("@faultTypeID", faultDetails.FaultTypeID);
+                    cmd.Parameters.AddWithValue("@faultDescription", faultDetails.FaultDescription);
+                    cmd.Parameters.AddWithValue("@faultPriority", faultDetails.FaultPriorityID);
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

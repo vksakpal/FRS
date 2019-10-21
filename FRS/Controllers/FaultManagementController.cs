@@ -82,6 +82,31 @@ namespace FRS.Controllers
 
         }
 
+        [HttpPost]
+        public JsonResult UpdateFaultDetails(FaultDetails faultDetails)
+        {
+            int result = 0;
+
+            if (faultDetails == null)
+            {
+                result = 1;
+            }
+
+            try
+            {
+                FaultManagerBAL bal = new FaultManagerBAL();
+                bal.UpdateFaultDetails(faultDetails);
+                result = 2;
+            }
+            catch (Exception ex)
+            {
+                result = 3;
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+
+        }
+
         [HttpGet]
         public JsonResult GetFaultList(int status)
         {
