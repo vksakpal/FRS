@@ -132,5 +132,36 @@ namespace FRS.DAL
             }
             return faultDetailsList.FirstOrDefault();
         }
+
+        public bool AssignFault(int faultId, int userId)
+        {
+            bool success = false;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString))
+                {
+
+                    SqlCommand cmd = new SqlCommand("AssignDeveloperToFault", con)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    cmd.Parameters.AddWithValue("@faultId", faultId);
+                    cmd.Parameters.AddWithValue("@userId", userId);
+                    con.Open();
+                    int row = cmd.ExecuteNonQuery();
+                    con.Close();
+                    if (row > 0)
+                    {
+                        success = true;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return success;
+        }
     }
 }

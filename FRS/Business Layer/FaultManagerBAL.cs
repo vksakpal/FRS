@@ -32,5 +32,11 @@ namespace FRS.Business_Layer
             FaultManagerDAL dal = new FaultManagerDAL();
             dal.UpdateFaultDetails(faultDetails);
         }
+
+        public bool AssignFault(int faultId, int userId)
+        {
+            FaultManagerDAL dal = new FaultManagerDAL();
+            return dal.AssignFault(faultId,userId);
+        }
     }
 }

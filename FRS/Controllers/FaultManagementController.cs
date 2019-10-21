@@ -142,6 +142,23 @@ namespace FRS.Controllers
             return Json(new { data = faultDetail }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public JsonResult AssignFault(int faultId, int userId)
+        {
+            bool success = false;
+            try
+            {
+                FaultManagerBAL bal = new FaultManagerBAL();
+                success = bal.AssignFault(faultId,userId);
+            }
+            catch (Exception ex)
+            {
+                success = false;
+            }
+
+            return Json(success, JsonRequestBehavior.AllowGet);
+        }
+
 
     }
 }
