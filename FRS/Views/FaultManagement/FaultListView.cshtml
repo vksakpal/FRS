@@ -27,7 +27,7 @@
 </table>
 
 
-<div id="dvaddfault" class="modal fade" role="dialog">
+<div id="dvupdateaddfault" class="modal fade" role="dialog">
 </div>
 
 <script type="text/javascript">
@@ -71,7 +71,7 @@
         else if ('@userDetails.RoleID' == "3") {
             columns.push({
                 "data": null, render: function (data) {
-                    return "<button class='btn btn-default btnupdate' data-faultid=" + data.FaultID + ">View</button>";
+                    return "<button class='btn btn-default btnview' data-faultid=" + data.FaultID + ">View</button>";
                 }
             });
         }
@@ -96,9 +96,33 @@
                 ContentType: "application/json",
                 cache:false,
                 success: function (html) {
-                    $("#dvaddfault").empty();
-                    $("#dvaddfault").html(html);
-                    $("#dvaddfault").modal({
+                    $("#dvupdateaddfault").empty();
+                    $("#dvupdateaddfault").html(html);
+                    $("#dvupdateaddfault").modal({
+                        backdrop: 'static',
+                        keyboard: false,
+                        show: true
+                    });
+
+                },
+                error: function () {
+                    alert("Error occured while opening the fault details popup");
+                }
+            });
+        });
+
+        $(document).on("click",".btnupdate,.btnview",function () {
+            var faultid = $(this).attr("data-faultid");
+            $.ajax({
+                url: '@Url.Action("FaultDetailsView","FaultManagement")',
+                type: "GET",
+                data: { "faultId": faultid},
+                ContentType: "application/json",
+                cache:false,
+                success: function (html) {
+                    $("#dvupdateaddfault").empty();
+                    $("#dvupdateaddfault").html(html);
+                    $("#dvupdateaddfault").modal({
                         backdrop: 'static',
                         keyboard: false,
                         show: true

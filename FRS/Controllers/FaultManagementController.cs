@@ -30,6 +30,7 @@ namespace FRS.Controllers
             if(faultId > 0)
             {
                 ViewBag.ModalTitle = "Update Fault";
+                faultDetails.FaultID = faultId;
             }
             else
             {
