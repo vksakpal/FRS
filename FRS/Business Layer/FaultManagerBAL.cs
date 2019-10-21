@@ -20,5 +20,11 @@ namespace FRS.Business_Layer
             FaultManagerDAL dal = new FaultManagerDAL();
             return dal.AddFaultDetails(faultDetails);
         }
+
+        public void UpdateFaultDetails(FaultDetails faultDetails)
+        {
+            FaultManagerDAL dal = new FaultManagerDAL();
+            dal.UpdateFaultDetails(faultDetails);
+        }
     }
 }
