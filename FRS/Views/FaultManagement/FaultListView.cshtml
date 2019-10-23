@@ -1,9 +1,9 @@
-﻿@{ 
+﻿@{
     var userDetails = ((FRS.Models.MyPrincipal)HttpContext.Current.User).User;
 }
 
 <div class="row form-group">
-    <div class="col-md-12 text-right" >
+    <div class="col-md-12 text-right">
         <button id="btnAddFault" type="button" class="btn btn-sm btn-primary">Add Fault Details</button>
     </div>
 </div>
@@ -32,6 +32,29 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+
+        $(document).on("change", ".assigneduser", function () {
+            var userid = $(this).val();
+            var faultid = $(this).attr("data-faultid");
+            $.ajax({
+                url: '@Url.Action("AssignFault","FaultManagement")',
+                type: 'GET',
+                contentType: 'application/json',
+                data: { "faultId": faultid, "userId": userid },
+                success: function (data) {
+                    if (data == true) {
+                        $("#faultdetailsgrid").DataTable().ajax.reload();
+                    }
+                    else {
+                        alert("Error occured while assigining the user to fault.");
+                    }
+                    
+                },
+                error: function () {
+                    alert("Error occured while assigining the user to fault.");
+                }
+            });
+        });
 
         var columns = [
             { "data": "FaultID" },
@@ -71,7 +94,22 @@
         else if ('@userDetails.RoleID' == "3") {
             columns.push({
                 "data": null, render: function (data) {
-                    
+                    var dropdown = "<select class='form-control assigneduser' data-faultid=" + data.FaultID + ">";
+                    if (data.DeveloperList) {
+                        dropdown = dropdown + "<option value=''>--Select--</option>"
+                        for (var i = 0; i < data.DeveloperList.length; i++)
+                        {
+                            if (data.AssignedUserID == data.DeveloperList[i].Value) {
+                                dropdown = dropdown + "<option value=" + data.DeveloperList[i].Value + " selected>" + data.DeveloperList[i].Text + "</option>";
+                            }
+                            else {
+                                dropdown = dropdown + "<option value=" + data.DeveloperList[i].Value + ">" + data.DeveloperList[i].Text + "</option>";
+                            }
+                            
+            }
+                    }
+                    dropdown = dropdown + "</select>";
+                    return dropdown;
                 }
                 });
             columns.push({
@@ -80,7 +118,7 @@
                 }
             });
         }
-        
+
 
         $("#faultdetailsgrid").DataTable({
             ajax: {
