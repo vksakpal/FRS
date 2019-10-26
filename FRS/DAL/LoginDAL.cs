@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using System.Data.SQLite;
 
 namespace FRS.DAL
 {
@@ -15,25 +16,26 @@ namespace FRS.DAL
         public UserDetails Login(LoginDetails logindetails)
         {
             UserDetails ud = null;
+
+            if(logindetails == null)
+            {
+                return ud;
+            }
             
             try
-            {
-                SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString);
-                SqlCommand cmd = new SqlCommand("Login", con)
+            {                
+                DataTable dt = new DataTable();                
+                using (SQLiteConnection sqlite_conn = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
                 {
-                    CommandType = CommandType.StoredProcedure
-                };
-                cmd.Parameters.AddWithValue("@userId", logindetails.UserID);
-                cmd.Parameters.AddWithValue("@password", logindetails.Password);
-                SqlDataAdapter sda = new SqlDataAdapter(cmd);
-                DataTable dt = new DataTable();
-                sda.Fill(dt);
-                con.Open();
-                int i = cmd.ExecuteNonQuery();
-                con.Close();
-                ud = dt.MapUserDetailsDataTable();
+                    SQLiteCommand cmd = sqlite_conn.CreateCommand();
+                    cmd.CommandText = $"SELECT * FROM TUserDetails WHERE UserID = '{logindetails.UserID}' AND UserPassword = '{logindetails.Password}'";
+                    SQLiteDataAdapter ad = new SQLiteDataAdapter(cmd);
+                    ad.Fill(dt);
+                    ud = dt.MapUserDetailsDataTable();
+
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
