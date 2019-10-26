@@ -95,7 +95,7 @@
             <div class="form-group row">
                 <label for="staticEmail" class="col-sm-4 col-form-label">Fault Description:</label>
                 <div class="col-sm-8">
-                    @Html.TextAreaFor(model => model.FaultTypeDescription, 10, 10, new { @class = "form-control" })
+                    @Html.TextAreaFor(model => model.FaultDescription, 10, 10, new { @class = "form-control" })
                 </div>
             </div>
             @if (Model.FaultID > 0)
@@ -162,7 +162,7 @@
                 data: faultDetails,
                 success: function (data) {
                     if (data.result == 2) {
-                        $("#dvaddfault").modal("hide");
+                        $("#dvupdateaddfault").modal("hide");
                         alert("Fault details have been saved successfully. Your Request number: " + data.faultId);
                         $("#faultdetailsgrid").DataTable().ajax.reload();
                     }
@@ -179,7 +179,7 @@
         $("#btnUpdateFaultPopup").click(function () {
             var faultDetails = {
                 "FaultID": $("#FaultID").val(),
-                "FaultDescription": $("#FaultTypeDescription").val(),
+                "FaultDescription": $("#FaultDescription").val(),
                 "ProductID": $("#ProductID option:selected").val(),
                 "FaultTypeID": $("#FaultTypeID option:selected").val(),
                 "StatusID": $("#StatusID option:selected").val(),
@@ -193,8 +193,8 @@
                 type: "POST",
                 data: faultDetails,
                 success: function (data) {
-                    if (data.result == 2) {
-                        $("#dvaddfault").modal("hide");
+                    if (data == 2) {
+                        $("#dvupdateaddfault").modal("hide");
                         alert("Request Number: " + '@Model.FaultID' + " Fault details have been saved successfully.");
                         $("#faultdetailsgrid").DataTable().ajax.reload();
                     }

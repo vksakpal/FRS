@@ -28,7 +28,7 @@ namespace FRS.Controllers
             FaultDetails faultDetails = new FaultDetails();
             FaultManagerBAL fmBal = new FaultManagerBAL();
             CommonBAL bal = new CommonBAL();
-            if(faultId > 0)
+            if (faultId > 0)
             {
                 ViewBag.ModalTitle = "Update Fault";
                 faultDetails = fmBal.GetFaultListByFaultId(faultId);
@@ -54,11 +54,11 @@ namespace FRS.Controllers
                     Text = "Major"
                 }
             };
-            if(faultId ==0 )
+            if (faultId == 0)
             {
                 faultDetails.StatusID = Convert.ToInt32(faultDetails.FaultStatusList.Where(x => x.Text.ToLower() == "new").Select(x => x.Value).FirstOrDefault());
             }
-            
+
             return PartialView("FaultDetailsView", faultDetails);
         }
 
@@ -68,7 +68,7 @@ namespace FRS.Controllers
             int result = 0;
             int faultId = 0;
 
-            if(faultDetails == null)
+            if (faultDetails == null)
             {
                 result = 1;
             }
@@ -79,12 +79,12 @@ namespace FRS.Controllers
                 faultId = bal.AddFaultDetails(faultDetails);
                 result = 2;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 result = 3;
             }
 
-            return Json(new { result ,faultId}, JsonRequestBehavior.AllowGet);
+            return Json(new { result, faultId }, JsonRequestBehavior.AllowGet);
 
         }
 
@@ -117,13 +117,24 @@ namespace FRS.Controllers
         public JsonResult GetFaultList(int status)
         {
             List<FaultDetails> faultList = new List<FaultDetails>();
+            CommonBAL commonBal = new CommonBAL();
+
 
             if (HttpContext.User != null)
             {
+
                 UserDetails userDetails = ((MyPrincipal)HttpContext.User).User;
+
+
                 FaultManagerBAL bal = new FaultManagerBAL();
-                 faultList = bal.GetFaultList(status, userDetails.RoleID, userDetails.ID);
-                
+                faultList = bal.GetFaultList(status, userDetails.RoleID, userDetails.ID);
+                if (userDetails.RoleID == 3)
+                {
+                    var developerList = commonBal.GetListOfDevelopersByManagerId(userDetails.ID);
+                    //faultList = faultList.Select(x => x.DeveloperList = developerList).ToList();
+                    faultList.All(c => { c.DeveloperList = developerList; return true; });
+                }
+
             }
             return Json(new { data = faultList }, JsonRequestBehavior.AllowGet);
         }
@@ -149,15 +160,17 @@ namespace FRS.Controllers
             try
             {
                 FaultManagerBAL bal = new FaultManagerBAL();
-                success = bal.AssignFault(faultId,userId);
+                success = bal.AssignFault(faultId, userId);
             }
-            catch (Exception ex)
+            catch
             {
                 success = false;
             }
 
             return Json(success, JsonRequestBehavior.AllowGet);
         }
+
+        
 
 
     }

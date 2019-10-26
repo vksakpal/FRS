@@ -26,6 +26,7 @@ namespace FRS.Models
         public List<SelectListItem> FaultStatusList { get; set; }
         public List<SelectListItem> FaultPriorityList { get; set; }
         public int FaultPriorityID { get; set; }
+        public List<SelectListItem> DeveloperList { get; set; }
 
     }
 }
