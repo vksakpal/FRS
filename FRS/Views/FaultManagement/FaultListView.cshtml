@@ -20,8 +20,21 @@
             <th>Reoprted Date</th>
             <th>Resolved Date</th>
             <th>Fault Priority</th>
-            <th>Assigned User</th>
-            <th></th>
+            @if (userDetails.RoleID == 3 || userDetails.RoleID == 1)
+            {
+                <th>Assigned User</th>
+            }
+
+            @if (userDetails.RoleID == 4)
+            {
+                <th>Add Comment</th>
+            }
+            else
+            {
+                <th></th>
+            }
+
+
         </tr>
     </thead>
 </table>
@@ -48,7 +61,7 @@
                     else {
                         alert("Error occured while assigining the user to fault.");
                     }
-                    
+
                 },
                 error: function () {
                     alert("Error occured while assigining the user to fault.");
@@ -97,24 +110,30 @@
                     var dropdown = "<select class='form-control assigneduser' data-faultid=" + data.FaultID + ">";
                     if (data.DeveloperList) {
                         dropdown = dropdown + "<option value=''>--Select--</option>"
-                        for (var i = 0; i < data.DeveloperList.length; i++)
-                        {
+                        for (var i = 0; i < data.DeveloperList.length; i++) {
                             if (data.AssignedUserID == data.DeveloperList[i].Value) {
                                 dropdown = dropdown + "<option value=" + data.DeveloperList[i].Value + " selected>" + data.DeveloperList[i].Text + "</option>";
                             }
                             else {
                                 dropdown = dropdown + "<option value=" + data.DeveloperList[i].Value + ">" + data.DeveloperList[i].Text + "</option>";
                             }
-                            
-            }
+
+                        }
                     }
                     dropdown = dropdown + "</select>";
                     return dropdown;
                 }
-                });
+            });
             columns.push({
                 "data": null, render: function (data) {
                     return "<button class='btn btn-default btnview' data-faultid=" + data.FaultID + ">View</button>";
+                }
+            });
+        }
+        else if ('@userDetails.RoleID' == "4") {
+columns.push({
+                "data": null, render: function (data) {
+                    return "<button class='btn btn-default addcomment' data-faultid=" + data.FaultID + "></button>";
                 }
             });
         }
@@ -177,5 +196,28 @@
                 }
             });
         });
-    });
+
+        $(document).on("click", ".addcomment", function () {
+            $.ajax({
+                url: '@Url.Action("AddCommentView","FaultManagement")',
+                type: "GET",
+                data: {"faultId":$(this).attr("data-faultid")},
+                ContentType: "application/json",
+                cache:false,
+                success: function (html) {
+                    $("#dvupdateaddfault").empty();
+                    $("#dvupdateaddfault").html(html);
+                    $("#dvupdateaddfault").modal({
+                        backdrop: 'static',
+                        keyboard: false,
+                        show: true
+                    });
+
+                },
+                error: function () {
+                    alert("Error occured while opening the fault details popup");
+                }
+        });
+        });
+        });
 </script>

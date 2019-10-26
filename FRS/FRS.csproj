@@ -152,6 +152,7 @@
     <Compile Include="Mapper\UserDetailsMapper.cs" />
     <Compile Include="Mapper\FaultDetailsMapper.cs" />
     <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\DeveloperComments.cs" />
     <Compile Include="Models\FaultDetails.cs" />
     <Compile Include="Models\LoginDetails.cs" />
     <Compile Include="Models\MyPrinciple.cs" />
@@ -329,6 +330,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\comment-add.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\DataTables\css\semanticui.scss" />
@@ -441,6 +443,7 @@
     <Content Include="Views\Home\FaultListView.cshtml" />
     <Content Include="Views\FaultManagement\FaultListView.cshtml" />
     <Content Include="Views\FaultManagement\FaultDetailsView.cshtml" />
+    <Content Include="Views\FaultManagement\AddCommentView.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.SQLite;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -17,18 +18,16 @@ namespace FRS.DAL
             List<SelectListItem> productList = new List<SelectListItem>();
             try
             {
-                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString))
+                DataTable dt = new DataTable();
+                using (SQLiteConnection sqlite_conn = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
                 {
-                    DataTable dt = new DataTable();
-                    SqlCommand cmd = new SqlCommand("GetListOfProducts", con)
-                    {
-                        CommandType = CommandType.StoredProcedure
-                    };
-                    SqlDataAdapter sda = new SqlDataAdapter(cmd);
-                    sda.Fill(dt);
+                    SQLiteCommand cmd = sqlite_conn.CreateCommand();
+                    cmd.CommandText = $"SELECT * FROM TProduct";
+                    SQLiteDataAdapter ad = new SQLiteDataAdapter(cmd);
+                    ad.Fill(dt);
                     productList = dt.MapProductsDataTableToCollection();
-                }
 
+                }
             }
             catch (Exception ex)
             {
@@ -39,27 +38,27 @@ namespace FRS.DAL
 
         public List<SelectListItem> GetFaultTypesList()
         {
-            List<SelectListItem> productList = new List<SelectListItem>();
+            List<SelectListItem> faultTypeList = new List<SelectListItem>();
             try
             {
-                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString))
+
+                DataTable dt = new DataTable();
+                using (SQLiteConnection sqlite_conn = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
                 {
-                    DataTable dt = new DataTable();
-                    SqlCommand cmd = new SqlCommand("GetListOfFaultTypes", con)
-                    {
-                        CommandType = CommandType.StoredProcedure
-                    };
-                    SqlDataAdapter sda = new SqlDataAdapter(cmd);
-                    sda.Fill(dt);
-                    productList = dt.MapFaultTypesDataTableToCollection();
-                }
+                    SQLiteCommand cmd = sqlite_conn.CreateCommand();
+                    cmd.CommandText = $"SELECT * FROM TFaultTypes";
+                    SQLiteDataAdapter ad = new SQLiteDataAdapter(cmd);
+                    ad.Fill(dt);
+                    faultTypeList = dt.MapFaultTypesDataTableToCollection();
+
+                }               
 
             }
             catch (Exception ex)
             {
 
             }
-            return productList;
+            return faultTypeList;
         }
 
         public List<SelectListItem> GetFaultStatusList()
@@ -67,18 +66,16 @@ namespace FRS.DAL
             List<SelectListItem> statusList = new List<SelectListItem>();
             try
             {
-                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString))
+                DataTable dt = new DataTable();
+                using (SQLiteConnection sqlite_conn = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
                 {
-                    DataTable dt = new DataTable();
-                    SqlCommand cmd = new SqlCommand("GetListOfFaultStatus", con)
-                    {
-                        CommandType = CommandType.StoredProcedure
-                    };
-                    SqlDataAdapter sda = new SqlDataAdapter(cmd);
-                    sda.Fill(dt);
+                    SQLiteCommand cmd = sqlite_conn.CreateCommand();
+                    cmd.CommandText = $"SELECT * FROM TStatus";
+                    SQLiteDataAdapter ad = new SQLiteDataAdapter(cmd);
+                    ad.Fill(dt);
                     statusList = dt.MapFaultStatusDataTableToCollection();
-                }
 
+                }
             }
             catch (Exception ex)
             {
@@ -92,19 +89,17 @@ namespace FRS.DAL
             List<SelectListItem> developerList = new List<SelectListItem>();
             try
             {
-                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString))
-                {
-                    DataTable dt = new DataTable();
-                    SqlCommand cmd = new SqlCommand("GetDeveloperListByManagerId", con)
-                    {
-                        CommandType = CommandType.StoredProcedure
-                    };
-                    cmd.Parameters.AddWithValue("@managerId", managerId);
-                    SqlDataAdapter sda = new SqlDataAdapter(cmd);
-                    sda.Fill(dt);
-                    developerList = dt.MapDeveloperDataTableToCollection();
-                }
 
+                DataTable dt = new DataTable();
+                using (SQLiteConnection sqlite_conn = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
+                {
+                    SQLiteCommand cmd = sqlite_conn.CreateCommand();
+                    cmd.CommandText = $"SELECT * FROM TUserDetails WHERE ManagerID = {managerId}";
+                    SQLiteDataAdapter ad = new SQLiteDataAdapter(cmd);
+                    ad.Fill(dt);
+                    developerList = dt.MapDeveloperDataTableToCollection();
+
+                }
             }
             catch (Exception ex)
             {

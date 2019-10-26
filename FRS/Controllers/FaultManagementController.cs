@@ -32,6 +32,7 @@ namespace FRS.Controllers
             {
                 ViewBag.ModalTitle = "Update Fault";
                 faultDetails = fmBal.GetFaultListByFaultId(faultId);
+                faultDetails.DeveloperCommentList = fmBal.GetDeveloperComments(faultId);
             }
             else
             {
@@ -170,8 +171,22 @@ namespace FRS.Controllers
             return Json(success, JsonRequestBehavior.AllowGet);
         }
 
-        
+        [HttpGet]
+        public PartialViewResult AddCommentView(int faultId)
+        {
+            ViewBag.FaultId = faultId;
+            return PartialView("AddCommentView");
+        }
 
 
+        [HttpPost]
+        public JsonResult AddComment(int faultId, string comment)
+        {
+            var result = false;
+            UserDetails userDetails = ((MyPrincipal)HttpContext.User).User;
+            FaultManagerBAL bal = new FaultManagerBAL();
+            result = bal.AddDeveloperComment(faultId, userDetails.ID, comment);
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }

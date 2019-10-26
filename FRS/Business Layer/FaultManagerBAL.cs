@@ -12,7 +12,7 @@ namespace FRS.Business_Layer
         public List<FaultDetails> GetFaultList(int status, int roleId, int userID)
         {
             FaultManagerDAL dal = new FaultManagerDAL();
-            return dal.GetFaultList(status,roleId,userID);
+            return dal.GetFaultList(status, roleId, userID);
         }
 
         public FaultDetails GetFaultListByFaultId(int faultId)
@@ -36,7 +36,19 @@ namespace FRS.Business_Layer
         public bool AssignFault(int faultId, int userId)
         {
             FaultManagerDAL dal = new FaultManagerDAL();
-            return dal.AssignFault(faultId,userId);
+            return dal.AssignFault(faultId, userId);
+        }
+
+        public bool AddDeveloperComment(int faultId, int userId, string comment)
+        {
+            FaultManagerDAL dal = new FaultManagerDAL();
+            return dal.AddDeveloperComment(faultId, userId, comment);
+        }
+
+        public List<DeveloperComments> GetDeveloperComments(int faultId)
+        {
+            FaultManagerDAL dal = new FaultManagerDAL();
+            return dal.GetDeveloperComments(faultId);
         }
     }
 }

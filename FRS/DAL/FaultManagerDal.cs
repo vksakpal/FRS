@@ -5,33 +5,77 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.SQLite;
 using System.Linq;
+using System.Text;
 using System.Web;
 
 namespace FRS.DAL
 {
     public class FaultManagerDAL
     {
-        public List<FaultDetails> GetFaultList(int status,int roleId, int userId)
+        public List<FaultDetails> GetFaultList(int status, int roleId, int userId)
         {
             List<FaultDetails> faultDetailsList = new List<FaultDetails>();
             try
             {
-                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString))
+                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
                 {
                     DataTable dt = new DataTable();
-                    SqlCommand cmd = new SqlCommand("GetFaultDetails", con)
+                    SQLiteCommand cmd = con.CreateCommand();
+
+                    StringBuilder sb = new StringBuilder();
+                    string cmdText = string.Empty;
+                    if (roleId == 4)
                     {
-                        CommandType = CommandType.StoredProcedure
-                    };
-                    cmd.Parameters.AddWithValue("@status", status);
-                    cmd.Parameters.AddWithValue("@roleID", roleId);
-                    cmd.Parameters.AddWithValue("@userID", userId);
-                    SqlDataAdapter sda = new SqlDataAdapter(cmd);
-                    sda.Fill(dt);
+                        sb.Append("SELECT");
+                        sb.Append(" FD.FaultID, FD.ProductID, P.ProductName, FD.StatusID, S.StatusDescription, UD.UserID, FD.AssignedUserID, FD.FaultReportingDate,");
+                        sb.Append(" FD.CustomerID, FD.FaultResolvedDate, FD.FaultTypeID, FT.FaultTypeDescription, FD.FaultDescription, C.Name as CustomerName,");
+                        sb.Append(" FD.FaultPriority, C.Phone, C.Email");
+                        sb.Append(" FROM TFaultDetails FD");
+                        sb.Append(" LEFT JOIN TPRODUCT P ON FD.ProductID = P.ProductID");
+                        sb.Append(" LEFT JOIN TStatus S on FD.StatusID = S.StatusID");
+                        sb.Append(" LEFT JOIN TUserDetails UD on FD.AssignedUserID = UD.ID");
+                        sb.Append(" LEFT JOIN TFaultTypes FT on FD.FaultTypeID = FT.FaultTypeId");
+                        sb.Append(" LEFT JOIN TCustomer C on FD.CustomerID = C.CustomerID");
+                        sb.Append($" {sb.ToString()} WHERE FD.AssignedUserID = {userId} AND FD.StatusID = {status}");
+                    }
+                    else if(roleId == 3)
+                    {
+                        sb.Append("SELECT");
+                        sb.Append(" FD.FaultID, FD.ProductID, P.ProductName, FD.StatusID, S.StatusDescription, UD.UserID, FD.AssignedUserID, FD.FaultReportingDate,");
+                        sb.Append(" FD.CustomerID, FD.FaultResolvedDate, FD.FaultTypeID, FT.FaultTypeDescription, FD.FaultDescription, C.Name as CustomerName,");
+                        sb.Append(" FD.FaultPriority, C.Phone, C.Email");
+                        sb.Append(" FROM TFaultDetails FD");
+                        sb.Append(" LEFT JOIN TPRODUCT P ON FD.ProductID = P.ProductID");
+                        sb.Append(" LEFT JOIN TStatus S on FD.StatusID = S.StatusID");
+                        sb.Append(" LEFT JOIN TUserDetails UD on FD.AssignedUserID = UD.ID");
+                        sb.Append(" LEFT JOIN TFaultTypes FT on FD.FaultTypeID = FT.FaultTypeId");
+                        sb.Append(" LEFT JOIN TCustomer C on FD.CustomerID = C.CustomerID");
+                        sb.Append($" WHERE FD.StatusID = {status} AND");
+                        sb.Append($" (FD.AssignedUserID IS NULL OR FD.AssignedUserID IN(Select ID from TUserDetails where ManagerID = {userId}))");
+                    }
+                    else
+                    {
+                        sb.Append("SELECT");
+                        sb.Append(" FD.FaultID, FD.ProductID, P.ProductName, FD.StatusID, S.StatusDescription, UD.UserID, FD.AssignedUserID, FD.FaultReportingDate,");
+                        sb.Append(" FD.CustomerID, FD.FaultResolvedDate, FD.FaultTypeID, FT.FaultTypeDescription, FD.FaultDescription, C.Name as CustomerName,");
+                        sb.Append(" FD.FaultPriority, C.Phone, C.Email");
+                        sb.Append(" FROM TFaultDetails FD");
+                        sb.Append(" LEFT JOIN TPRODUCT P ON FD.ProductID = P.ProductID");
+                        sb.Append(" LEFT JOIN TStatus S on FD.StatusID = S.StatusID");
+                        sb.Append(" LEFT JOIN TUserDetails UD on FD.AssignedUserID = UD.ID");
+                        sb.Append(" LEFT JOIN TFaultTypes FT on FD.FaultTypeID = FT.FaultTypeId");
+                        sb.Append(" LEFT JOIN TCustomer C on FD.CustomerID = C.CustomerID");
+                        sb.Append($" where FD.StatusID = {status}");
+                    }
+                    cmd.CommandText = sb.ToString();
+                    SQLiteDataAdapter ad = new SQLiteDataAdapter(cmd);
+                    ad.Fill(dt);                   
                     faultDetailsList = dt.MapFaultDetailsDataTableToCollection();
                 }
-               
+
+
             }
             catch (Exception ex)
             {
@@ -54,9 +98,9 @@ namespace FRS.DAL
                     };
                     cmd.Parameters.AddWithValue("@productId", faultDetails.ProductID);
                     cmd.Parameters.AddWithValue("@statusID", faultDetails.StatusID);
-                    cmd.Parameters.AddWithValue("@faultReportingDate", DateTime.Now);                    
+                    cmd.Parameters.AddWithValue("@faultReportingDate", DateTime.Now);
                     cmd.Parameters.AddWithValue("@faultTypeID", faultDetails.FaultTypeID);
-                    cmd.Parameters.AddWithValue("@faultDescription", faultDetails.FaultDescription);                    
+                    cmd.Parameters.AddWithValue("@faultDescription", faultDetails.FaultDescription);
                     cmd.Parameters.AddWithValue("@CustomerName", faultDetails.CustomerInfo.Name);
                     cmd.Parameters.AddWithValue("@Phone", faultDetails.CustomerInfo.Phone);
                     cmd.Parameters.AddWithValue("@Email", faultDetails.CustomerInfo.Email);
@@ -112,19 +156,33 @@ namespace FRS.DAL
             List<FaultDetails> faultDetailsList = new List<FaultDetails>();
             try
             {
-                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString))
+
+
+                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
                 {
                     DataTable dt = new DataTable();
-                    SqlCommand cmd = new SqlCommand("FaultDetailsByFaultID", con)
-                    {
-                        CommandType = CommandType.StoredProcedure
-                    };
-                    cmd.Parameters.AddWithValue("@faultId", faultId);
-                    SqlDataAdapter sda = new SqlDataAdapter(cmd);
-                    sda.Fill(dt);
+                    SQLiteCommand cmd = con.CreateCommand();
+
+                    StringBuilder sb = new StringBuilder();
+                    string cmdText = string.Empty;
+                   
+                        sb.Append("SELECT");
+                        sb.Append(" FD.FaultID,FD.ProductID, P.ProductName, FD.StatusID ,S.StatusDescription, UD.UserID, FD.AssignedUserID, FD.FaultReportingDate,");
+                        sb.Append(" FD.CustomerID, FD.FaultResolvedDate, FD.FaultTypeID,FT.FaultTypeDescription,FD.FaultDescription , C.Name as CustomerName,");
+                        sb.Append(" C.Email, C.Phone,FD.FaultPriority");
+                        sb.Append(" FROM TFaultDetails FD");
+                        sb.Append(" LEFT JOIN TPRODUCT P ON FD.ProductID = P.ProductID");
+                        sb.Append(" LEFT JOIN TStatus S on FD.StatusID = S.StatusID");
+                        sb.Append(" LEFT JOIN TUserDetails UD on FD.AssignedUserID = UD.ID");
+                        sb.Append(" LEFT JOIN TFaultTypes FT on FD.FaultTypeID = FT.FaultTypeId");
+                        sb.Append(" LEFT JOIN TCustomer C on FD.CustomerID = C.CustomerID");
+                        sb.Append($" where FD.FaultId = {faultId}");
+                    
+                    cmd.CommandText = sb.ToString();
+                    SQLiteDataAdapter ad = new SQLiteDataAdapter(cmd);
+                    ad.Fill(dt);
                     faultDetailsList = dt.MapFaultDetailsDataTableToCollection();
                 }
-
             }
             catch (Exception ex)
             {
@@ -162,6 +220,67 @@ namespace FRS.DAL
                 throw ex;
             }
             return success;
+        }
+
+        public bool AddDeveloperComment(int faultId, int userId, string comment)
+        {
+            bool result = false;
+            try
+            {
+                using (SQLiteConnection sqlite_conn = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
+                {
+                    SQLiteCommand cmd = sqlite_conn.CreateCommand();
+                    cmd.CommandText = $"INSERT INTO TDeveloperComments(FaultID, UserID, Comments,CreatedDate) VALUES({faultId},{userId},'{comment}','{DateTime.Now:yyyy-MM-dd HH:mm:ss}')";
+                    sqlite_conn.Open();
+                    int count = cmd.ExecuteNonQuery();
+                    if(count > 0)
+                    {
+                        result = true;
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+
+            }
+
+            return result;
+            
+        }
+
+        public List<DeveloperComments> GetDeveloperComments(int faultId)
+        {
+            List<DeveloperComments> developerCommentList = new List<DeveloperComments>();
+            try
+            {
+
+
+                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
+                {
+                    DataTable dt = new DataTable();
+                    SQLiteCommand cmd = con.CreateCommand();
+
+                    StringBuilder sb = new StringBuilder();
+                    string cmdText = string.Empty;
+
+                    sb.Append("SELECT");
+                    sb.Append(" TDC.FaultID,TDC.UserID, TDC.Comments, TDC.CreatedDate ,UD.UserID AS UserName");                                     
+                    sb.Append(" FROM TDeveloperComments TDC");
+                    sb.Append(" INNER JOIN TUserDetails UD on TDC.UserID = UD.ID");                    
+                    sb.Append($" where TDC.FaultID = {faultId}");
+                    sb.Append(" ORDER BY TDC.CreatedDate DESC");
+
+                    cmd.CommandText = sb.ToString();
+                    SQLiteDataAdapter ad = new SQLiteDataAdapter(cmd);
+                    ad.Fill(dt);
+                    developerCommentList = dt.MapDeveloperCommentsDataTableToCollection();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return developerCommentList;
         }
     }
 }

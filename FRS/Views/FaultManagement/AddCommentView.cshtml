@@ -1,0 +1,49 @@
+﻿<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Add Comment</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">            
+            <div class="form-group row">
+                <input type="hidden" id="hdnfaultid" value="@ViewBag.FaultId" />
+                <label for="staticEmail" class="col-sm-2 col-form-label">Comment:</label>
+                <div class="col-sm-10">
+                    <textarea id="txtcomment" rows="10" cols="150"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="btnAddCommentPopup">Add Comment</button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnAddCommentPopup").click(function () {
+            $.ajax({
+                url: '@Url.Action("AddComment","FaultManagement")',
+                ContentType: "application/json",
+                type: "POST",
+                data: {"faultId": $("#hdnfaultid").val(), "comment": $("#txtcomment").val()},
+                success: function (data) {
+                    if (data == true) {
+                        $("#dvupdateaddfault").modal("hide");
+                        alert("Comment added successfully.");
+                        $("#faultdetailsgrid").DataTable().ajax.reload();
+                    }
+                    else {
+                        alert("Error occured while saving the fault details");
+                    }
+                },
+                error: function () {
+                    alert("Error occured while saving the fault details");
+                }
+            });
+        });
+    });
+</script>

@@ -34,3 +34,10 @@ textarea {
     margin-bottom: 10px;
     padding-top: 5px;
 }
+
+.addcomment {
+    background-image: url("../Images/comment-add.png");
+    background-repeat: round;
+    width: 35px;
+    height: 35px;
+}

@@ -28,5 +28,7 @@ namespace FRS.Models
         public int FaultPriorityID { get; set; }
         public List<SelectListItem> DeveloperList { get; set; }
 
+        public List<DeveloperComments> DeveloperCommentList { get; set; }
+
     }
 }

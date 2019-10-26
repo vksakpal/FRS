@@ -44,5 +44,28 @@ namespace FRS.Mapper
 
             return faultDetailsList;
         }
+
+
+        public static List<DeveloperComments> MapDeveloperCommentsDataTableToCollection(this DataTable dt)
+        {
+            List<DeveloperComments> developerCommentsList = new List<DeveloperComments>();
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    developerCommentsList.Add(new DeveloperComments
+                    {
+                        FaultId = Convert.IsDBNull(dr["FaultID"]) ? 0 : Convert.ToInt32(dr["FaultID"]),
+                        UserId = Convert.IsDBNull(dr["UserID"]) ? 0 : Convert.ToInt32(dr["UserID"]),
+                        Comment = Convert.IsDBNull(dr["Comments"]) ? string.Empty : Convert.ToString(dr["Comments"]),                        
+                        UserName = Convert.IsDBNull(dr["UserName"]) ? string.Empty : Convert.ToString(dr["UserName"]),
+                        Date = Convert.IsDBNull(dr["CreatedDate"]) ? string.Empty : string.Format("{0: dd/MM/yyyy HH:mm}", Convert.ToDateTime(dr["CreatedDate"])),
+                        
+                    });
+                }
+            }
+
+            return developerCommentsList;
+        }
     }
 }
