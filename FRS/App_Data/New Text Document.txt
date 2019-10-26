@@ -46,3 +46,17 @@ SELECT FD.FaultID,FD.ProductID, P.ProductName, FD.StatusID ,S.StatusDescription,
 	where FD.StatusID = @status
 END
 END
+
+
+=====
+
+SELECT FD.FaultID,FD.ProductID, P.ProductName, FD.StatusID ,S.StatusDescription, UD.UserID, FD.AssignedUserID, FD.FaultReportingDate,
+	FD.CustomerID, FD.FaultResolvedDate, FD.FaultTypeID,FT.FaultTypeDescription,FD.FaultDescription , C.Name as CustomerName,
+	C.Email, C.Phone,FD.FaultPriority
+	from TFaultDetails FD
+	left Join TProduct P on FD.ProductID = P.ProductID
+	left join TStatus S on FD.StatusID = S.StatusID
+	left join TUserDetails UD on FD.AssignedUserID = UD.ID
+	left join TFaultTypes FT on FD.FaultTypeID = FT.FaultTypeId
+	left join TCustomer C on FD.CustomerID = C.CustomerID
+	where FD.FaultID = @faultID
