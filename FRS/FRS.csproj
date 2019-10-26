@@ -150,6 +150,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\FRS.db" />
     <Content Include="App_Data\FRS.mdf" />
     <Content Include="App_Data\FRS_log.ldf">
       <DependentUpon>FRS.mdf</DependentUpon>
