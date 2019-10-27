@@ -19,7 +19,7 @@ namespace FRS.DAL
             List<FaultDetails> faultDetailsList = new List<FaultDetails>();
             try
             {
-                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
+                using (SQLiteConnection con = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
                     DataTable dt = new DataTable();
                     SQLiteCommand cmd = con.CreateCommand();
@@ -158,7 +158,7 @@ namespace FRS.DAL
             {
 
 
-                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
+                using (SQLiteConnection con = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
                     DataTable dt = new DataTable();
                     SQLiteCommand cmd = con.CreateCommand();
@@ -227,7 +227,7 @@ namespace FRS.DAL
             bool result = false;
             try
             {
-                using (SQLiteConnection sqlite_conn = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
+                using (SQLiteConnection sqlite_conn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
                     SQLiteCommand cmd = sqlite_conn.CreateCommand();
                     cmd.CommandText = $"INSERT INTO TDeveloperComments(FaultID, UserID, Comments,CreatedDate) VALUES({faultId},{userId},'{comment}','{DateTime.Now:yyyy-MM-dd HH:mm:ss}')";
@@ -255,7 +255,7 @@ namespace FRS.DAL
             {
 
 
-                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
+                using (SQLiteConnection con = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
                     DataTable dt = new DataTable();
                     SQLiteCommand cmd = con.CreateCommand();
