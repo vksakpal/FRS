@@ -19,7 +19,7 @@ namespace FRS.DAL
             try
             {
                 DataTable dt = new DataTable();
-                using (SQLiteConnection sqlite_conn = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
+                using (SQLiteConnection sqlite_conn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
                     SQLiteCommand cmd = sqlite_conn.CreateCommand();
                     cmd.CommandText = $"SELECT * FROM TProduct";
@@ -43,7 +43,7 @@ namespace FRS.DAL
             {
 
                 DataTable dt = new DataTable();
-                using (SQLiteConnection sqlite_conn = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
+                using (SQLiteConnection sqlite_conn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
                     SQLiteCommand cmd = sqlite_conn.CreateCommand();
                     cmd.CommandText = $"SELECT * FROM TFaultTypes";
@@ -67,7 +67,7 @@ namespace FRS.DAL
             try
             {
                 DataTable dt = new DataTable();
-                using (SQLiteConnection sqlite_conn = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
+                using (SQLiteConnection sqlite_conn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
                     SQLiteCommand cmd = sqlite_conn.CreateCommand();
                     cmd.CommandText = $"SELECT * FROM TStatus";
@@ -91,7 +91,7 @@ namespace FRS.DAL
             {
 
                 DataTable dt = new DataTable();
-                using (SQLiteConnection sqlite_conn = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
+                using (SQLiteConnection sqlite_conn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
                     SQLiteCommand cmd = sqlite_conn.CreateCommand();
                     cmd.CommandText = $"SELECT * FROM TUserDetails WHERE ManagerID = {managerId}";
