@@ -312,7 +312,7 @@
                 "FaultResolvedDate": $("#FaultResolvedDate").val(),                
                 "StatusID": $("#StatusID option:selected").val()               
             };
-            debugger;
+           // debugger;
             $.ajax({
                 url: '@Url.Action("UpdateFaultDetails", "FaultManagement")',
                 ContentType: "application/json",

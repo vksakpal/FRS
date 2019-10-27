@@ -112,30 +112,39 @@ namespace FRS.DAL
             int faultId = 0;
             try
             {
-                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString))
+                using (SQLiteConnection sqlite_conn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
+                    int customerID = 0;
+                    DataTable dt = new DataTable();
+                    StringBuilder sb = new StringBuilder();
+                    SQLiteCommand cmd = sqlite_conn.CreateCommand();
 
-                    SqlCommand cmd = new SqlCommand("AddFaultDetails", con)
+                    sb.Append($" SELECT CustomerID FROM TCustomer WHERE Phone = {faultDetails.CustomerInfo.Phone} AND Email = '{faultDetails.CustomerInfo.Email}' ");
+                    cmd.CommandText = sb.ToString();
+                    sqlite_conn.Open();
+                    SQLiteDataAdapter ad = new SQLiteDataAdapter(cmd);
+                    ad.Fill(dt);
+                    if (dt.Rows.Count > 0)
                     {
-                        CommandType = CommandType.StoredProcedure
-                    };
-                    cmd.Parameters.AddWithValue("@productId", faultDetails.ProductID);
-                    cmd.Parameters.AddWithValue("@statusID", faultDetails.StatusID);
-                    cmd.Parameters.AddWithValue("@faultReportingDate", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@faultTypeID", faultDetails.FaultTypeID);
-                    cmd.Parameters.AddWithValue("@faultDescription", faultDetails.FaultDescription);
-                    cmd.Parameters.AddWithValue("@CustomerName", faultDetails.CustomerInfo.Name);
-                    cmd.Parameters.AddWithValue("@Phone", faultDetails.CustomerInfo.Phone);
-                    cmd.Parameters.AddWithValue("@Email", faultDetails.CustomerInfo.Email);
-                    cmd.Parameters.AddWithValue("@faultPriority", faultDetails.FaultPriorityID);
-                    cmd.Parameters.Add("@Id", SqlDbType.Int);
-                    cmd.Parameters["@Id"].Direction = ParameterDirection.Output;
-                    con.Open();
+                        customerID = Convert.ToInt32(dt.Rows[0]["CustomerID"]);
+                    }
+                    else
+                    {
+                        sb.Clear();
+                        sb.Append($" INSERT INTO TCustomer(Name, Phone,Email )VALUES('{faultDetails.CustomerInfo.Name}', {faultDetails.CustomerInfo.Phone}, '{faultDetails.CustomerInfo.Email}')");
+                        cmd.CommandText = sb.ToString();
+                        cmd.ExecuteNonQuery();
+                        customerID = (int)sqlite_conn.LastInsertRowId;
+
+                    }
+                    sb.Clear();
+                    sb.Append(" INSERT INTO TFaultDetails (ProductId, StatusID, AssignedUserID, FaultReportingDate,CustomerID,FaultResolvedDate,FaultTypeID,FaultDescription,FaultPriority)  ");
+                    sb.Append($" VALUES ({faultDetails.ProductID}, {faultDetails.StatusID}, NULL, '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', {customerID},NULL, {faultDetails.FaultTypeID}, '{faultDetails.FaultDescription}',{faultDetails.FaultPriorityID}); ");
+                    cmd.CommandText = sb.ToString();
                     cmd.ExecuteNonQuery();
-                    faultId = Convert.ToInt16(cmd.Parameters["@id"].Value);
+                    faultId = (int)sqlite_conn.LastInsertRowId;
 
                 }
-
             }
             catch (Exception ex)
             {
@@ -148,23 +157,19 @@ namespace FRS.DAL
         {
             try
             {
-                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString))
+                using (SQLiteConnection sqlite_conn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
-
-                    SqlCommand cmd = new SqlCommand("UpdateFaultDetails", con)
+                    SQLiteCommand cmd = sqlite_conn.CreateCommand();
+                    if (String.IsNullOrEmpty(faultDetails.FaultResolvedDate))
                     {
-                        CommandType = CommandType.StoredProcedure
-                    };
-                    cmd.Parameters.AddWithValue("@faultID", faultDetails.FaultID);
-                    cmd.Parameters.AddWithValue("@productId", faultDetails.ProductID);
-                    cmd.Parameters.AddWithValue("@statusID", faultDetails.StatusID);
-                    cmd.Parameters.AddWithValue("@faultResolvedDate", faultDetails.FaultResolvedDate == null ? (object)DBNull.Value : Convert.ToDateTime(faultDetails.FaultResolvedDate));
-                    cmd.Parameters.AddWithValue("@faultTypeID", faultDetails.FaultTypeID);
-                    cmd.Parameters.AddWithValue("@faultDescription", faultDetails.FaultDescription);
-                    cmd.Parameters.AddWithValue("@faultPriority", faultDetails.FaultPriorityID);
-                    con.Open();
+                        cmd.CommandText = $"UPDATE TFaultDetails SET ProductId = {faultDetails.ProductID}, StatusID = {faultDetails.StatusID}, FaultResolvedDate = NULL, FaultTypeID = {faultDetails.FaultTypeID}, FaultDescription = '{faultDetails.FaultDescription}', FaultPriority = {faultDetails.FaultPriorityID} where FaultID = {faultDetails.FaultID}";
+                    }
+                    else
+                    {
+                        cmd.CommandText = $"UPDATE TFaultDetails SET ProductId = {faultDetails.ProductID}, StatusID = {faultDetails.StatusID}, FaultResolvedDate = '{Convert.ToDateTime(faultDetails.FaultResolvedDate):yyyy-MM-dd HH:mm:ss}', FaultTypeID = {faultDetails.FaultTypeID}, FaultDescription = '{faultDetails.FaultDescription}', FaultPriority = {faultDetails.FaultPriorityID} where FaultID = {faultDetails.FaultID}";
+                    }
+                    sqlite_conn.Open();
                     cmd.ExecuteNonQuery();
-                    con.Close();
                 }
 
             }
