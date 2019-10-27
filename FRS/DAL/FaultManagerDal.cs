@@ -19,7 +19,7 @@ namespace FRS.DAL
             List<FaultDetails> faultDetailsList = new List<FaultDetails>();
             try
             {
-                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
+                using (SQLiteConnection con = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
                     DataTable dt = new DataTable();
                     SQLiteCommand cmd = con.CreateCommand();
@@ -181,7 +181,7 @@ namespace FRS.DAL
             {
 
 
-                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
+                using (SQLiteConnection con = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
                     DataTable dt = new DataTable();
                     SQLiteCommand cmd = con.CreateCommand();
@@ -219,24 +219,17 @@ namespace FRS.DAL
             bool success = false;
             try
             {
-                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString))
+                using (SQLiteConnection sqlite_conn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
-
-                    SqlCommand cmd = new SqlCommand("AssignDeveloperToFault", con)
-                    {
-                        CommandType = CommandType.StoredProcedure
-                    };
-                    cmd.Parameters.AddWithValue("@faultId", faultId);
-                    cmd.Parameters.AddWithValue("@userId", userId);
-                    con.Open();
-                    int row = cmd.ExecuteNonQuery();
-                    con.Close();
-                    if (row > 0)
+                    SQLiteCommand cmd = sqlite_conn.CreateCommand();
+                    cmd.CommandText = $"Update TFaultDetails SET AssignedUserID = {userId} where FaultID = {faultId}";
+                    sqlite_conn.Open();
+                    int count = cmd.ExecuteNonQuery();
+                    if (count > 0)
                     {
                         success = true;
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -250,7 +243,7 @@ namespace FRS.DAL
             bool result = false;
             try
             {
-                using (SQLiteConnection sqlite_conn = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
+                using (SQLiteConnection sqlite_conn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
                     SQLiteCommand cmd = sqlite_conn.CreateCommand();
                     cmd.CommandText = $"INSERT INTO TDeveloperComments(FaultID, UserID, Comments,CreatedDate) VALUES({faultId},{userId},'{comment}','{DateTime.Now:yyyy-MM-dd HH:mm:ss}')";
@@ -290,7 +283,7 @@ namespace FRS.DAL
             {
 
 
-                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\FRS.db;Version=3;New=True;Compress=True;"))
+                using (SQLiteConnection con = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
                     DataTable dt = new DataTable();
                     SQLiteCommand cmd = con.CreateCommand();
