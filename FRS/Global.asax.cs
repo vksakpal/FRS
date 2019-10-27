@@ -40,5 +40,10 @@ namespace FRS
                 Context.User = principal;
             }
         }
+
+        protected void Application_Error(object sender, EventArgs e)
+        {
+
+        }
     }
 }

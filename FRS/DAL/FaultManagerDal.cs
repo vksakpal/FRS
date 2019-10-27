@@ -38,7 +38,15 @@ namespace FRS.DAL
                         sb.Append(" LEFT JOIN TUserDetails UD on FD.AssignedUserID = UD.ID");
                         sb.Append(" LEFT JOIN TFaultTypes FT on FD.FaultTypeID = FT.FaultTypeId");
                         sb.Append(" LEFT JOIN TCustomer C on FD.CustomerID = C.CustomerID");
-                        sb.Append($" {sb.ToString()} WHERE FD.AssignedUserID = {userId} AND FD.StatusID = {status}");
+                        if(status == 0)
+                        {
+                            sb.Append($" WHERE FD.AssignedUserID = {userId} AND FD.StatusID IN (1,2)");
+                        }
+                        else
+                        {
+                            sb.Append($" WHERE FD.AssignedUserID = {userId} AND FD.StatusID = {status}");
+                        }
+                        
                     }
                     else if(roleId == 3)
                     {
@@ -52,7 +60,15 @@ namespace FRS.DAL
                         sb.Append(" LEFT JOIN TUserDetails UD on FD.AssignedUserID = UD.ID");
                         sb.Append(" LEFT JOIN TFaultTypes FT on FD.FaultTypeID = FT.FaultTypeId");
                         sb.Append(" LEFT JOIN TCustomer C on FD.CustomerID = C.CustomerID");
-                        sb.Append($" WHERE FD.StatusID = {status} AND");
+                        if (status == 0)
+                        {
+                            sb.Append($" WHERE FD.StatusID IN(1,2) AND");
+                        }
+                        else
+                        {
+                            sb.Append($" WHERE FD.StatusID = {status} AND");
+                        }
+                            
                         sb.Append($" (FD.AssignedUserID IS NULL OR FD.AssignedUserID IN(Select ID from TUserDetails where ManagerID = {userId}))");
                     }
                     else
@@ -67,7 +83,14 @@ namespace FRS.DAL
                         sb.Append(" LEFT JOIN TUserDetails UD on FD.AssignedUserID = UD.ID");
                         sb.Append(" LEFT JOIN TFaultTypes FT on FD.FaultTypeID = FT.FaultTypeId");
                         sb.Append(" LEFT JOIN TCustomer C on FD.CustomerID = C.CustomerID");
-                        sb.Append($" where FD.StatusID = {status}");
+                        if (status == 0)
+                        {
+                            sb.Append($" WHERE FD.StatusID IN(1,2)");
+                        }
+                        else
+                        {
+                            sb.Append($" WHERE FD.StatusID = {status}");
+                        }
                     }
                     cmd.CommandText = sb.ToString();
                     SQLiteDataAdapter ad = new SQLiteDataAdapter(cmd);
@@ -222,7 +245,7 @@ namespace FRS.DAL
             return success;
         }
 
-        public bool AddDeveloperComment(int faultId, int userId, string comment)
+        public bool AddDeveloperComment(int faultId, int userId, string comment, string faultResolveDate, int statusId)
         {
             bool result = false;
             try
@@ -232,8 +255,20 @@ namespace FRS.DAL
                     SQLiteCommand cmd = sqlite_conn.CreateCommand();
                     cmd.CommandText = $"INSERT INTO TDeveloperComments(FaultID, UserID, Comments,CreatedDate) VALUES({faultId},{userId},'{comment}','{DateTime.Now:yyyy-MM-dd HH:mm:ss}')";
                     sqlite_conn.Open();
-                    int count = cmd.ExecuteNonQuery();
-                    if(count > 0)
+                    int countDevComment = cmd.ExecuteNonQuery();
+
+                    if(string.IsNullOrEmpty(faultResolveDate))
+                    {
+                        cmd.CommandText = $"UPDATE TFaultDetails SET StatusID = {statusId}, FaultResolvedDate=NULL WHERE FaultID={faultId}";
+                    }
+                    else
+                    {
+                        DateTime dt = Convert.ToDateTime(faultResolveDate);
+                        cmd.CommandText = $"UPDATE TFaultDetails SET StatusID = {statusId}, FaultResolvedDate='{dt:yyyy-MM-dd HH:mm:ss}' WHERE FaultID={faultId}";
+                    }
+                    
+                    int countUpdate = cmd.ExecuteNonQuery();
+                    if (countUpdate > 0 && countDevComment > 0)
                     {
                         result = true;
                     }
@@ -282,5 +317,7 @@ namespace FRS.DAL
             }
             return developerCommentList;
         }
+
+        
     }
 }

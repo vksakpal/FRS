@@ -101,8 +101,17 @@ namespace FRS.Controllers
 
             try
             {
+                UserDetails userDetails = ((MyPrincipal)HttpContext.User).User;
                 FaultManagerBAL bal = new FaultManagerBAL();
-                bal.UpdateFaultDetails(faultDetails);
+                if(userDetails.RoleID == 4)
+                {
+                    bal.AddDeveloperComment(faultDetails.FaultID,userDetails.ID, faultDetails.Comment, faultDetails.FaultResolvedDate, faultDetails.StatusID);
+                }
+                else
+                {
+                    bal.UpdateFaultDetails(faultDetails);
+                }
+                
                 result = 2;
             }
             catch (Exception ex)
@@ -115,7 +124,7 @@ namespace FRS.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetFaultList(int status)
+        public JsonResult GetFaultList(int? status)
         {
             List<FaultDetails> faultList = new List<FaultDetails>();
             CommonBAL commonBal = new CommonBAL();
@@ -128,7 +137,7 @@ namespace FRS.Controllers
 
 
                 FaultManagerBAL bal = new FaultManagerBAL();
-                faultList = bal.GetFaultList(status, userDetails.RoleID, userDetails.ID);
+                faultList = bal.GetFaultList(status == null ? 0: (int)status, userDetails.RoleID, userDetails.ID);
                 if (userDetails.RoleID == 3)
                 {
                     var developerList = commonBal.GetListOfDevelopersByManagerId(userDetails.ID);
@@ -172,20 +181,23 @@ namespace FRS.Controllers
         }
 
         [HttpGet]
-        public PartialViewResult AddCommentView(int faultId)
+        public PartialViewResult AddCommentView(int faultId, int statusId)
         {
             ViewBag.FaultId = faultId;
+            ViewBag.StatusId = statusId;
+            CommonBAL bal = new CommonBAL();
+            ViewBag.FaultStatusList = bal.GetFaultStatusList();
             return PartialView("AddCommentView");
         }
 
 
         [HttpPost]
-        public JsonResult AddComment(int faultId, string comment)
+        public JsonResult AddComment(int faultId, string comment, int statusId, string faultResolvedDate)
         {
             var result = false;
             UserDetails userDetails = ((MyPrincipal)HttpContext.User).User;
             FaultManagerBAL bal = new FaultManagerBAL();
-            result = bal.AddDeveloperComment(faultId, userDetails.ID, comment);
+            result = bal.AddDeveloperComment(faultId, userDetails.ID, comment, faultResolvedDate, statusId);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
     }

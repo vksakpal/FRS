@@ -39,10 +39,10 @@ namespace FRS.Business_Layer
             return dal.AssignFault(faultId, userId);
         }
 
-        public bool AddDeveloperComment(int faultId, int userId, string comment)
+        public bool AddDeveloperComment(int faultId, int userId, string comment, string faultResolvedDate, int statusId)
         {
             FaultManagerDAL dal = new FaultManagerDAL();
-            return dal.AddDeveloperComment(faultId, userId, comment);
+            return dal.AddDeveloperComment(faultId, userId, comment, faultResolvedDate, statusId );
         }
 
         public List<DeveloperComments> GetDeveloperComments(int faultId)

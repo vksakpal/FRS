@@ -1,6 +1,9 @@
 ﻿@model FRS.Models.FaultDetails
+@{
+    var userDetails = ((FRS.Models.MyPrincipal)HttpContext.Current.User).User;
+}
 
-<div class="modal-dialog" role="document">  
+<div class="modal-dialog" role="document">
     <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">@ViewBag.ModalTitle</h5>
@@ -65,36 +68,70 @@
                 </div>
             </div>
 
-            <div class="form-group row">
-                <label for="staticEmail" class="col-sm-4 col-form-label">Fault Status:</label>
-                <div class="col-sm-8">
-                    @Html.DropDownListFor(model => model.StatusID, Model.FaultStatusList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultStatusList, "Value", "Text"), "--Select--", new { @class = "form-control" })
+            @if (userDetails.RoleID != 4)
+            {
+                <div class="form-group row">
+                    <label for="staticEmail" class="col-sm-4 col-form-label">Fault Status:</label>
+                    <div class="col-sm-8">
+                        @Html.DropDownListFor(model => model.StatusID, Model.FaultStatusList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultStatusList, "Value", "Text"), "--Select--", new { @class = "form-control", @readonly = true })
+                    </div>
                 </div>
-            </div>
+
+            }
 
             <div class="form-group row">
                 <label for="staticEmail" class="col-sm-4 col-form-label">Fault Priority:</label>
                 <div class="col-sm-8">
-                    @Html.DropDownListFor(model => model.FaultPriorityID, Model.FaultPriorityList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultPriorityList, "Value", "Text"), "--Select--", new { @class = "form-control" })
+                    @if (userDetails.RoleID == 4)
+                    {
+                        @Html.DropDownListFor(model => model.FaultPriorityID, Model.FaultPriorityList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultPriorityList, "Value", "Text"), "--Select--", new { @class = "form-control", @readonly = true })
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.FaultPriorityID, Model.FaultPriorityList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultPriorityList, "Value", "Text"), "--Select--", new { @class = "form-control" })
+                    }
+
+
                 </div>
             </div>
 
             <div class="form-group row">
                 <label for="staticEmail" class="col-sm-4 col-form-label">Product Name:</label>
                 <div class="col-sm-8">
-                    @Html.DropDownListFor(model => model.ProductID, Model.ProductList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.ProductList, "Value", "Text"), "--Select--", new { @class = "form-control" })
+                    @if (userDetails.RoleID == 4)
+                    {
+                        @Html.DropDownListFor(model => model.ProductID, Model.ProductList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.ProductList, "Value", "Text"), "--Select--", new { @class = "form-control", @readonly = true })
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.ProductID, Model.ProductList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.ProductList, "Value", "Text"), "--Select--", new { @class = "form-control" })
+                    }
                 </div>
             </div>
             <div class="form-group row">
                 <label for="staticEmail" class="col-sm-4 col-form-label">Fault Type:</label>
                 <div class="col-sm-8">
-                    @Html.DropDownListFor(model => model.FaultTypeID, Model.FaultTypeList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultTypeList, "Value", "Text"), "--Select--", new { @class = "form-control" })
+                    @if (userDetails.RoleID == 4)
+                    {
+                        @Html.DropDownListFor(model => model.FaultTypeID, Model.FaultTypeList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultTypeList, "Value", "Text"), "--Select--", new { @class = "form-control", @readonly = true })
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.FaultTypeID, Model.FaultTypeList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultTypeList, "Value", "Text"), "--Select--", new { @class = "form-control" })
+                    }
                 </div>
             </div>
             <div class="form-group row">
                 <label for="staticEmail" class="col-sm-4 col-form-label">Fault Description:</label>
                 <div class="col-sm-8">
-                    @Html.TextAreaFor(model => model.FaultDescription, 10, 10, new { @class = "form-control" })
+                    @if (userDetails.RoleID == 4)
+                    {
+                        @Html.TextAreaFor(model => model.FaultDescription, 10, 10, new { @class = "form-control", @readonly = true })
+                    }
+                    else
+                    {
+                        @Html.TextAreaFor(model => model.FaultDescription, 10, 10, new { @class = "form-control" })
+                    }
                 </div>
             </div>
             @if (Model.FaultID > 0)
@@ -102,22 +139,58 @@
                 <div class="form-group row">
                     <label for="staticEmail" class="col-sm-4 col-form-label">Fault Reporting Date:</label>
                     <div class="col-sm-8">
-                        @Html.TextBoxFor(model => model.FaultReportingDate, new { @class = "form-control" })
+                        @if (userDetails.RoleID == 4)
+                        {
+                            @Html.TextBoxFor(model => model.FaultReportingDate, new { @class = "form-control", @readonly = true })
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(model => model.FaultReportingDate, new { @class = "form-control" })
+                        }
                     </div>
                 </div>
+
+
+                if (userDetails.RoleID == 4)
+                {
+                    <div class="form-group row">
+                        <label for="staticEmail" class="col-sm-4 col-form-label">Fault Status:</label>
+                        <div class="col-sm-8">
+                            @Html.DropDownListFor(model => model.StatusID, Model.FaultStatusList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultStatusList, "Value", "Text"), "--Select--", new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                }
 
                 <div class="form-group row">
                     <label for="staticEmail" class="col-sm-4 col-form-label">Fault Resolved Date:</label>
                     <div class="col-sm-8">
-                        @Html.TextBoxFor(model => model.FaultResolvedDate, new { @class = "form-control" })
+                        @if (userDetails.RoleID == 4)
+                        {
+                            @Html.TextBoxFor(model => model.FaultResolvedDate, new { @class = "form-control" })
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(model => model.FaultResolvedDate, new { @class = "form-control", @readonly = true })
+                        }
                     </div>
                 </div>
+
+                if (userDetails.RoleID == 4)
+                {
+                    <div class="form-group row">
+                        <label for="staticEmail" class="col-sm-4 col-form-label">Comment:</label>
+                        <div class="col-sm-8">
+                            <textarea id="txtcomment" rows="10" cols="150"></textarea>
+                        </div>
+                    </div>
+                }
             }
 
 
 
 
-            @if (Model.DeveloperCommentList?.Count > 0)
+            @if (Model.DeveloperCommentList != null && Model.DeveloperCommentList.Count > 0)
             {
                 <div class="row">
                     <div class="col-md-12 subheader">
@@ -145,6 +218,10 @@
             {
                 <button type="button" class="btn btn-primary" id="btnAddFaultPopup">Add Fault</button>
             }
+            else if (Model.FaultID > 0 && userDetails.RoleID == 4)
+            {
+                <button type="button" class="btn btn-primary" id="btnUpdateFaultDeveloperPopup">Update Fault</button>
+            }
             else
             {
                 <button type="button" class="btn btn-primary" id="btnUpdateFaultPopup">Update Fault</button>
@@ -152,7 +229,7 @@
 
         </div>
     </div>
-   
+
 
 </div>
 
@@ -161,10 +238,10 @@
         $('.collapse').collapse();
 
         $("#btnAddFaultPopup").click(function () {
-            
-            var faultDetails = {
+
+                        var faultDetails = {
                 "CustomerInfo": {
-                    "Name": $("#CustomerInfo_Name").val(),
+                            "Name": $("#CustomerInfo_Name").val(),
                     "Phone": $("#CustomerInfo_Phone").val(),
                     "Email": $("#CustomerInfo_Email").val()
                 },
@@ -176,25 +253,25 @@
             };
 
             $.ajax({
-                url: '@Url.Action("AddFaultDetails","FaultManagement")',
+                    url: '@Url.Action("AddFaultDetails","FaultManagement")',
                 ContentType: "application/json",
                 type: "POST",
                 data: faultDetails,
                 success: function (data) {
-                    if (data.result == 2) {
+                            if (data.result == 2) {
                         $("#dvupdateaddfault").modal("hide");
-                        alert("Fault details have been saved successfully. Your Request number: " + data.faultId);
+                                alert("Fault details have been saved successfully. Your Request number: " + data.faultId);
                         $("#faultdetailsgrid").DataTable().ajax.reload();
-                    }
-                    else {
-                        alert("Error occured while saving the fault details");
-                    }
-                },
+                            }
+                            else {
+                                alert("Error occured while saving the fault details");
+                            }
+                        },
                 error: function () {
-                    alert("Error occured while saving the fault details");
-                }
-            });
-        });
+                            alert("Error occured while saving the fault details");
+                        }
+                    });
+                });
 
         $("#btnUpdateFaultPopup").click(function () {
             var faultDetails = {
@@ -213,22 +290,50 @@
                 type: "POST",
                 data: faultDetails,
                 success: function (data) {
-                    if (data == 2) {
+                        if (data == 2) {
                         $("#dvupdateaddfault").modal("hide");
-                        alert("Request Number: " + '@Model.FaultID' + " Fault details have been saved successfully.");
+                            alert("Request Number: " + '@Model.FaultID' + " Fault details have been saved successfully.");
                         $("#faultdetailsgrid").DataTable().ajax.reload();
-                    }
-                    else {
+                        }
+                        else {
+                            alert("Error occured while saving the fault details");
+                        }
+                    },
+                error: function () {
                         alert("Error occured while saving the fault details");
                     }
-                },
-                error: function () {
-                    alert("Error occured while saving the fault details");
-                }
-            });
+                });
         });
+
+        $("#btnUpdateFaultDeveloperPopup").click(function () {
+            var faultDetails = {
+                "FaultID": $("#FaultID").val(),
+                "Comment": $("#txtcomment").val(),
+                "FaultResolvedDate": $("#FaultResolvedDate").val(),                
+                "StatusID": $("#StatusID option:selected").val()               
+            };
+            debugger;
+            $.ajax({
+                url: '@Url.Action("UpdateFaultDetails", "FaultManagement")',
+                ContentType: "application/json",
+                type: "POST",
+                data: faultDetails,
+                success: function (data) {
+                        if (data == 2) {
+                        $("#dvupdateaddfault").modal("hide");
+                            alert("Request Number: " + '@Model.FaultID' + " Fault details have been saved successfully.");
+                        $("#faultdetailsgrid").DataTable().ajax.reload();
+                        }
+                        else {
+                            alert("Error occured while saving the fault details");
+                        }
+                    },
+                error: function () {
+                        alert("Error occured while saving the fault details");
+                    }
+                });
+        });
+
+
     });
-
-
-
 </script>

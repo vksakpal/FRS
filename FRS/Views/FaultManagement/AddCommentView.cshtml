@@ -6,7 +6,19 @@
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <div class="modal-body">            
+        <div class="modal-body">
+            <div class="form-group row">
+                <label for="staticEmail" class="col-sm-2 col-form-label">Fault Status:</label>
+                <div class="col-sm-10">
+                    @Html.DropDownList("StatusID", ViewBag.FaultStatusList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(ViewBag.FaultStatusList, "Value", "Text",ViewBag.StatusId), "--Select--", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="staticEmail" class="col-sm-2 col-form-label">Fault Resolved Date:</label>
+                <div class="col-sm-10">
+                    @Html.TextBox("FaultResolvedDate",string.Empty, new { @class = "form-control" })
+                </div>
+            </div>
             <div class="form-group row">
                 <input type="hidden" id="hdnfaultid" value="@ViewBag.FaultId" />
                 <label for="staticEmail" class="col-sm-2 col-form-label">Comment:</label>
@@ -29,7 +41,12 @@
                 url: '@Url.Action("AddComment","FaultManagement")',
                 ContentType: "application/json",
                 type: "POST",
-                data: {"faultId": $("#hdnfaultid").val(), "comment": $("#txtcomment").val()},
+                data: {
+                    "faultId": $("#hdnfaultid").val(),
+                    "comment": $("#txtcomment").val(),
+                    "statusId": $("#StatusID option:selected").val(),
+                    "faultResolvedDate": $("#FaultResolvedDate").val(),
+                    },
                 success: function (data) {
                     if (data == true) {
                         $("#dvupdateaddfault").modal("hide");

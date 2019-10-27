@@ -25,16 +25,12 @@
                 <th>Assigned User</th>
             }
 
+            <th>Update</th>
+
             @if (userDetails.RoleID == 4)
             {
                 <th>Add Comment</th>
             }
-            else
-            {
-                <th></th>
-            }
-
-
         </tr>
     </thead>
 </table>
@@ -98,7 +94,6 @@
         if ('@userDetails.RoleID' == "1") {
             columns.push({ "data": "UserID" });
             columns.push({
-
                 "data": null, render: function (data) {
                     return "<button class='btn btn-default btnupdate' data-faultid=" + data.FaultID + ">Update</button>";
                 }
@@ -131,9 +126,16 @@
             });
         }
         else if ('@userDetails.RoleID' == "4") {
-columns.push({
+
+            columns.push({
                 "data": null, render: function (data) {
-                    return "<button class='btn btn-default addcomment' data-faultid=" + data.FaultID + "></button>";
+                    return "<button class='btn btn-default btnupdate' data-faultid=" + data.FaultID + ">Update</button>";
+                }
+            });
+
+            columns.push({
+                "data": null, render: function (data) {
+                    return "<button class='btn btn-default addcomment' data-faultid=" + data.FaultID + " data-statusid="+ data.StatusID+"></button>";
                 }
             });
         }
@@ -142,8 +144,7 @@ columns.push({
         $("#faultdetailsgrid").DataTable({
             ajax: {
                 url: "@Url.Action("GetFaultList","FaultManagement")",
-                type: "GET",
-                data: { "status": 1 }
+                type: "GET"                
             },
             columns: columns
         });
@@ -201,7 +202,7 @@ columns.push({
             $.ajax({
                 url: '@Url.Action("AddCommentView","FaultManagement")',
                 type: "GET",
-                data: {"faultId":$(this).attr("data-faultid")},
+                data: {"faultId":$(this).attr("data-faultid"),"statusId":$(this).attr("data-statusid")},
                 ContentType: "application/json",
                 cache:false,
                 success: function (html) {
