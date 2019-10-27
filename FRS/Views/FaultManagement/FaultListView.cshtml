@@ -52,6 +52,7 @@
                 data: { "faultId": faultid, "userId": userid },
                 success: function (data) {
                     if (data == true) {
+                        alert("Developer assigned successfully to fault id:" + faultid);
                         $("#faultdetailsgrid").DataTable().ajax.reload();
                     }
                     else {
