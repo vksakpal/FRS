@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewBag.Title = "User List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>User List</h2>
+
+<div class="row form-group">
+    <div class="col-md-12 text-right">
+        <button type="button" class="btn btn-default" id="btnadduser">Add User</button>
+    </div>
+</div>
+
+<table id="usergrid" class="table table-bordered">
+    <thead>
+        <tr>
+            <th>User Name</th>
+            <th>Role</th>
+            <th>Manager</th>
+            <th>Update/View</th>
+            <th>Delete</th>                  
+        </tr>
+    </thead>
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#usergrid").DataTable();
+    });
+</script>
