@@ -41,3 +41,7 @@ textarea {
     width: 35px;
     height: 35px;
 }
+
+.datetimepicker{
+    width:0%!important;
+}

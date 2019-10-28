@@ -139,14 +139,14 @@
                 <div class="form-group row">
                     <label for="staticEmail" class="col-sm-4 col-form-label">Fault Reporting Date:</label>
                     <div class="col-sm-8">
-                        @if (userDetails.RoleID == 4)
-                        {
+                        @*@if (userDetails.RoleID == 4)
+                        {*@
                             @Html.TextBoxFor(model => model.FaultReportingDate, new { @class = "form-control", @readonly = true })
-                        }
+                        @*}
                         else
                         {
                             @Html.TextBoxFor(model => model.FaultReportingDate, new { @class = "form-control" })
-                        }
+                        }*@
                     </div>
                 </div>
 
@@ -167,11 +167,26 @@
                     <div class="col-sm-8">
                         @if (userDetails.RoleID == 4)
                         {
-                            @Html.TextBoxFor(model => model.FaultResolvedDate, new { @class = "form-control" })
+                            //@Html.TextBoxFor(model => model.FaultResolvedDate, new { @class = "form-control" })
+
+                            <div class='input-group date' id='FaultResolvedDate'>
+                                <input type='text' class="form-control" id="FaultResolvedDate" value="@Model.FaultResolvedDate" />
+                                <span class="input-group-addon datetimepicker">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+
                         }
                         else
                         {
-                            @Html.TextBoxFor(model => model.FaultResolvedDate, new { @class = "form-control", @readonly = true })
+                            <div class='input-group date' id='FaultResolvedDate'>
+                                <input type='text' class="form-control" id="FaultResolvedDate" value="@Model.FaultResolvedDate" readonly />
+                                <span class="input-group-addon datetimepicker">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+
+                            //@Html.TextBoxFor(model => model.FaultResolvedDate, new { @class = "form-control", @readonly = true })
                         }
                     </div>
                 </div>
@@ -235,13 +250,26 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('.collapse').collapse();
+        if('@Model.FaultResolvedDate' != "")
+        {
+            $("div.date").datetimepicker({
+                date: new Date('@Model.FaultResolvedDate'),
+                format : 'DD/MM/YYYY HH:mm'
+            });
+        }
+        else
+        {
+            $("div.date").datetimepicker({
+                   format : 'DD/MM/YYYY HH:mm'
+            });
+        }
+        
 
         $("#btnAddFaultPopup").click(function () {
 
-                        var faultDetails = {
+                var faultDetails = {
                 "CustomerInfo": {
-                            "Name": $("#CustomerInfo_Name").val(),
+                    "Name": $("#CustomerInfo_Name").val(),
                     "Phone": $("#CustomerInfo_Phone").val(),
                     "Email": $("#CustomerInfo_Email").val()
                 },
@@ -253,25 +281,25 @@
             };
 
             $.ajax({
-                    url: '@Url.Action("AddFaultDetails","FaultManagement")',
+            url: '@Url.Action("AddFaultDetails","FaultManagement")',
                 ContentType: "application/json",
                 type: "POST",
                 data: faultDetails,
                 success: function (data) {
-                            if (data.result == 2) {
+                    if (data.result == 2) {
                         $("#dvupdateaddfault").modal("hide");
-                                alert("Fault details have been saved successfully. Your Request number: " + data.faultId);
+                        alert("Fault details have been saved successfully. Your Request number: " + data.faultId);
                         $("#faultdetailsgrid").DataTable().ajax.reload();
-                            }
-                            else {
-                                alert("Error occured while saving the fault details");
-                            }
-                        },
+                    }
+                    else {
+                        alert("Error occured while saving the fault details");
+                    }
+                },
                 error: function () {
-                            alert("Error occured while saving the fault details");
-                        }
-                    });
-                });
+                    alert("Error occured while saving the fault details");
+                }
+            });
+        });
 
         $("#btnUpdateFaultPopup").click(function () {
             var faultDetails = {
@@ -309,8 +337,8 @@
             var faultDetails = {
                 "FaultID": $("#FaultID").val(),
                 "Comment": $("#txtcomment").val(),
-                "FaultResolvedDate": $("#FaultResolvedDate").val(),                
-                "StatusID": $("#StatusID option:selected").val()               
+                "FaultResolvedDate": $("#FaultResolvedDate").val(),
+                "StatusID": $("#StatusID option:selected").val()
             };
            // debugger;
             $.ajax({

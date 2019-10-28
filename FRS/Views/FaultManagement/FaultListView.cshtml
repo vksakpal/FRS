@@ -2,11 +2,15 @@
     var userDetails = ((FRS.Models.MyPrincipal)HttpContext.Current.User).User;
 }
 
-<div class="row form-group">
-    <div class="col-md-12 text-right">
-        <button id="btnAddFault" type="button" class="btn btn-sm btn-primary">Add Fault Details</button>
+@if (userDetails.RoleID == 1)
+{
+    <div class="row form-group">
+        <div class="col-md-12 text-right">
+            <button id="btnAddFault" type="button" class="btn btn-sm btn-primary">Add Fault Details</button>
+        </div>
     </div>
-</div>
+}
+
 
 <table id="faultdetailsgrid" class="table table-bordered">
     <thead>
@@ -25,7 +29,7 @@
                 <th>Assigned User</th>
             }
 
-            <th>Update</th>
+            <th>Update/View</th>
 
             @if (userDetails.RoleID == 4)
             {
@@ -94,11 +98,18 @@
 
         if ('@userDetails.RoleID' == "1") {
             columns.push({ "data": "UserID" });
-            columns.push({
-                "data": null, render: function (data) {
-                    return "<button class='btn btn-default btnupdate' data-faultid=" + data.FaultID + ">Update</button>";
-                }
-            });
+
+                columns.push({
+                    "data": null, render: function (data) {
+                        if (data.StatusDescription == "Closed") {
+                            return "<button class='btn btn-default btnview' data-faultid=" + data.FaultID + ">View</button>";
+                        }
+                        else {
+                            return "<button class='btn btn-default btnupdate' data-faultid=" + data.FaultID + ">Update</button>";
+                        }
+                    }
+                });
+
         }
         else if ('@userDetails.RoleID' == "3") {
             columns.push({
@@ -145,7 +156,7 @@
         $("#faultdetailsgrid").DataTable({
             ajax: {
                 url: "@Url.Action("GetFaultList","FaultManagement")",
-                type: "GET"                
+                type: "GET"
             },
             columns: columns
         });

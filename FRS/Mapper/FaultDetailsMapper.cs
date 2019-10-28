@@ -26,7 +26,7 @@ namespace FRS.Mapper
                         StatusDescription = Convert.IsDBNull(dr["StatusDescription"]) ? string.Empty : Convert.ToString(dr["StatusDescription"]),
                         UserID = Convert.IsDBNull(dr["UserID"]) ? string.Empty : Convert.ToString(dr["UserID"]),
                         AssignedUserID = Convert.IsDBNull(dr["AssignedUserID"]) ? 0 : Convert.ToInt32(dr["AssignedUserID"]),
-                        FaultReportingDate = Convert.IsDBNull(dr["FaultReportingDate"]) ? string.Empty : string.Format("{0: dd/MM/yyyy}", Convert.ToDateTime(dr["FaultReportingDate"])),
+                        FaultReportingDate = Convert.IsDBNull(dr["FaultReportingDate"]) ? string.Empty : string.Format("{0: dd/MM/yyyy HH:mm:ss}", Convert.ToDateTime(dr["FaultReportingDate"])),
                         CustomerInfo = new Customer
                         {
                             ID = Convert.IsDBNull(dr["CustomerID"]) ? 0 : Convert.ToInt32(dr["CustomerID"]),
@@ -34,7 +34,7 @@ namespace FRS.Mapper
                             Email = Convert.IsDBNull(dr["Email"]) ? string.Empty : Convert.ToString(dr["Email"]),
                             Phone = Convert.IsDBNull(dr["Phone"]) ? string.Empty : Convert.ToString(dr["Phone"]),
                         },
-                        FaultResolvedDate = Convert.IsDBNull(dr["FaultResolvedDate"]) ? string.Empty : string.Format("{0: dd/MM/yyyy}", Convert.ToDateTime(dr["FaultResolvedDate"])),
+                        FaultResolvedDate = Convert.IsDBNull(dr["FaultResolvedDate"]) ? string.Empty : string.Format("{0: dd/MM/yyyy HH:mm:ss}", Convert.ToDateTime(dr["FaultResolvedDate"])),
                         FaultTypeID = Convert.IsDBNull(dr["FaultTypeID"]) ? 0 : Convert.ToInt32(dr["FaultTypeID"]),
                         FaultDescription = Convert.IsDBNull(dr["FaultDescription"]) ? string.Empty : Convert.ToString(dr["FaultDescription"]),
                         FaultTypeDescription = Convert.IsDBNull(dr["FaultTypeDescription"]) ? string.Empty : Convert.ToString(dr["FaultTypeDescription"]),
