@@ -11,5 +11,7 @@ namespace FRS.Models
         public string UserID { get; set; }
         public DateTime? ExpiryDate { get; set; }
         public int RoleID { get; set; }
+        public string UserPassword { get; set; }
+        public int ManagerId { get; set; }
     }
 }

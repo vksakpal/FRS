@@ -135,12 +135,14 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Business Layer\AdminBAL.cs" />
     <Compile Include="Business Layer\CommonBAL.cs" />
     <Compile Include="Business Layer\FaultManagerBAL.cs" />
     <Compile Include="Business Layer\LoginBAL.cs" />
     <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="Controllers\FaultManagementController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="DAL\AdminDAL.cs" />
     <Compile Include="DAL\CommonDAL.cs" />
     <Compile Include="DAL\FaultManagerDAL.cs" />
     <Compile Include="DAL\LoginDAL.cs" />
