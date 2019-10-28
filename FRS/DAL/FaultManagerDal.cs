@@ -14,7 +14,7 @@ namespace FRS.DAL
 {
     public class FaultManagerDAL
     {
-        public List<FaultDetails> GetFaultList(int status, int roleId, int userId)
+        public List<FaultDetails> GetFaultList(string status, int roleId, int userId)
         {
             List<FaultDetails> faultDetailsList = new List<FaultDetails>();
             try
@@ -38,17 +38,12 @@ namespace FRS.DAL
                         sb.Append(" LEFT JOIN TUserDetails UD on FD.AssignedUserID = UD.ID");
                         sb.Append(" LEFT JOIN TFaultTypes FT on FD.FaultTypeID = FT.FaultTypeId");
                         sb.Append(" LEFT JOIN TCustomer C on FD.CustomerID = C.CustomerID");
-                        if(status == 0)
-                        {
-                            sb.Append($" WHERE FD.AssignedUserID = {userId} AND FD.StatusID IN (1,2)");
-                        }
-                        else
-                        {
-                            sb.Append($" WHERE FD.AssignedUserID = {userId} AND FD.StatusID = {status}");
-                        }
-                        
+
+                        sb.Append($" WHERE FD.AssignedUserID = {userId} AND FD.StatusID IN ({status})");
+
+
                     }
-                    else if(roleId == 3)
+                    else if (roleId == 3)
                     {
                         sb.Append("SELECT");
                         sb.Append(" FD.FaultID, FD.ProductID, P.ProductName, FD.StatusID, S.StatusDescription, UD.UserID, FD.AssignedUserID, FD.FaultReportingDate,");
@@ -60,15 +55,10 @@ namespace FRS.DAL
                         sb.Append(" LEFT JOIN TUserDetails UD on FD.AssignedUserID = UD.ID");
                         sb.Append(" LEFT JOIN TFaultTypes FT on FD.FaultTypeID = FT.FaultTypeId");
                         sb.Append(" LEFT JOIN TCustomer C on FD.CustomerID = C.CustomerID");
-                        if (status == 0)
-                        {
-                            sb.Append($" WHERE FD.StatusID IN(1,2) AND");
-                        }
-                        else
-                        {
-                            sb.Append($" WHERE FD.StatusID = {status} AND");
-                        }
-                            
+                        
+                            sb.Append($" WHERE FD.StatusID IN({status}) AND");
+                      
+
                         sb.Append($" (FD.AssignedUserID IS NULL OR FD.AssignedUserID IN(Select ID from TUserDetails where ManagerID = {userId}))");
                     }
                     else
@@ -83,18 +73,13 @@ namespace FRS.DAL
                         sb.Append(" LEFT JOIN TUserDetails UD on FD.AssignedUserID = UD.ID");
                         sb.Append(" LEFT JOIN TFaultTypes FT on FD.FaultTypeID = FT.FaultTypeId");
                         sb.Append(" LEFT JOIN TCustomer C on FD.CustomerID = C.CustomerID");
-                        if (status == 0)
-                        {
-                            sb.Append($" WHERE FD.StatusID IN(1,2)");
-                        }
-                        else
-                        {
-                            sb.Append($" WHERE FD.StatusID = {status}");
-                        }
+                        
+                            sb.Append($" WHERE FD.StatusID IN({status})");
+                      
                     }
                     cmd.CommandText = sb.ToString();
                     SQLiteDataAdapter ad = new SQLiteDataAdapter(cmd);
-                    ad.Fill(dt);                   
+                    ad.Fill(dt);
                     faultDetailsList = dt.MapFaultDetailsDataTableToCollection();
                 }
 
@@ -196,19 +181,19 @@ namespace FRS.DAL
 
                     StringBuilder sb = new StringBuilder();
                     string cmdText = string.Empty;
-                   
-                        sb.Append("SELECT");
-                        sb.Append(" FD.FaultID,FD.ProductID, P.ProductName, FD.StatusID ,S.StatusDescription, UD.UserID, FD.AssignedUserID, FD.FaultReportingDate,");
-                        sb.Append(" FD.CustomerID, FD.FaultResolvedDate, FD.FaultTypeID,FT.FaultTypeDescription,FD.FaultDescription , C.Name as CustomerName,");
-                        sb.Append(" C.Email, C.Phone,FD.FaultPriority");
-                        sb.Append(" FROM TFaultDetails FD");
-                        sb.Append(" LEFT JOIN TPRODUCT P ON FD.ProductID = P.ProductID");
-                        sb.Append(" LEFT JOIN TStatus S on FD.StatusID = S.StatusID");
-                        sb.Append(" LEFT JOIN TUserDetails UD on FD.AssignedUserID = UD.ID");
-                        sb.Append(" LEFT JOIN TFaultTypes FT on FD.FaultTypeID = FT.FaultTypeId");
-                        sb.Append(" LEFT JOIN TCustomer C on FD.CustomerID = C.CustomerID");
-                        sb.Append($" where FD.FaultId = {faultId}");
-                    
+
+                    sb.Append("SELECT");
+                    sb.Append(" FD.FaultID,FD.ProductID, P.ProductName, FD.StatusID ,S.StatusDescription, UD.UserID, FD.AssignedUserID, FD.FaultReportingDate,");
+                    sb.Append(" FD.CustomerID, FD.FaultResolvedDate, FD.FaultTypeID,FT.FaultTypeDescription,FD.FaultDescription , C.Name as CustomerName,");
+                    sb.Append(" C.Email, C.Phone,FD.FaultPriority");
+                    sb.Append(" FROM TFaultDetails FD");
+                    sb.Append(" LEFT JOIN TPRODUCT P ON FD.ProductID = P.ProductID");
+                    sb.Append(" LEFT JOIN TStatus S on FD.StatusID = S.StatusID");
+                    sb.Append(" LEFT JOIN TUserDetails UD on FD.AssignedUserID = UD.ID");
+                    sb.Append(" LEFT JOIN TFaultTypes FT on FD.FaultTypeID = FT.FaultTypeId");
+                    sb.Append(" LEFT JOIN TCustomer C on FD.CustomerID = C.CustomerID");
+                    sb.Append($" where FD.FaultId = {faultId}");
+
                     cmd.CommandText = sb.ToString();
                     SQLiteDataAdapter ad = new SQLiteDataAdapter(cmd);
                     ad.Fill(dt);
@@ -258,7 +243,7 @@ namespace FRS.DAL
                     sqlite_conn.Open();
                     int countDevComment = cmd.ExecuteNonQuery();
 
-                    if(string.IsNullOrEmpty(faultResolveDate))
+                    if (string.IsNullOrEmpty(faultResolveDate))
                     {
                         cmd.CommandText = $"UPDATE TFaultDetails SET StatusID = {statusId}, FaultResolvedDate=NULL WHERE FaultID={faultId}";
                     }
@@ -267,7 +252,7 @@ namespace FRS.DAL
                         DateTime dt = Convert.ToDateTime(faultResolveDate);
                         cmd.CommandText = $"UPDATE TFaultDetails SET StatusID = {statusId}, FaultResolvedDate='{dt:yyyy-MM-dd HH:mm:ss}' WHERE FaultID={faultId}";
                     }
-                    
+
                     int countUpdate = cmd.ExecuteNonQuery();
                     if (countUpdate > 0 && countDevComment > 0)
                     {
@@ -275,13 +260,13 @@ namespace FRS.DAL
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
 
             return result;
-            
+
         }
 
         public List<DeveloperComments> GetDeveloperComments(int faultId)
@@ -300,9 +285,9 @@ namespace FRS.DAL
                     string cmdText = string.Empty;
 
                     sb.Append("SELECT");
-                    sb.Append(" TDC.FaultID,TDC.UserID, TDC.Comments, TDC.CreatedDate ,UD.UserID AS UserName");                                     
+                    sb.Append(" TDC.FaultID,TDC.UserID, TDC.Comments, TDC.CreatedDate ,UD.UserID AS UserName");
                     sb.Append(" FROM TDeveloperComments TDC");
-                    sb.Append(" INNER JOIN TUserDetails UD on TDC.UserID = UD.ID");                    
+                    sb.Append(" INNER JOIN TUserDetails UD on TDC.UserID = UD.ID");
                     sb.Append($" where TDC.FaultID = {faultId}");
                     sb.Append(" ORDER BY TDC.CreatedDate DESC");
 
@@ -319,6 +304,6 @@ namespace FRS.DAL
             return developerCommentList;
         }
 
-        
+
     }
 }

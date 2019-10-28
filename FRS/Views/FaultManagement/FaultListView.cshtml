@@ -5,8 +5,25 @@
 @if (userDetails.RoleID == 1)
 {
     <div class="row form-group">
-        <div class="col-md-12 text-right">
+        <div class="col-md-6">
+            <span>Fault Status:</span>
+            @Html.DropDownList("FilterStatusID", ViewBag.FaultStatusList == null ? Enumerable.Empty<SelectListItem>() : new MultiSelectList(ViewBag.FaultStatusList, "Value", "Text", ViewBag.SelectedFaultStatusList), new { @class = "form-control chosen-select", @readonly = true, multiple = true })
+
+            <button type="button" id="btnstatusfilter" class="btn btn-default">Apply Filter</button>
+        </div>
+        <div class="col-md-6 text-right">
             <button id="btnAddFault" type="button" class="btn btn-sm btn-primary">Add Fault Details</button>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row form-group">
+        <div class="col-md-6">
+            <span>Fault Status:</span>
+            @Html.DropDownList("FilterStatusID", ViewBag.FaultStatusList == null ? Enumerable.Empty<SelectListItem>() : new MultiSelectList(ViewBag.FaultStatusList, "Value", "Text", ViewBag.SelectedFaultStatusList), "--Select--", new { @class = "form-control chosen-select", @readonly = true, multiple = true })
+
+            <button type="button" id="btnstatusfilter" class="btn btn-default">Apply Filter</button>
         </div>
     </div>
 }
@@ -46,6 +63,18 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
+        $(".chosen-select").chosen();
+
+        $("#btnstatusfilter").click(function () {
+            if ($("#FilterStatusID").val().length >0) {
+                $("#faultdetailsgrid").DataTable().ajax.reload();
+            }
+            else {
+                alert("Please select at least one status.");
+            }
+
+        });
+
         $(document).on("change", ".assigneduser", function () {
             var userid = $(this).val();
             var faultid = $(this).attr("data-faultid");
@@ -76,7 +105,7 @@
             { "data": "FaultTypeDescription" },
             { "data": "FaultDescription" },
             { "data": "ProductName" },
-            { "data": "StatusDescription" },
+            { "data": "StatusDescription", "searchable": false },
             { "data": "FaultReportingDate" },
             { "data": "FaultResolvedDate" },
             {
@@ -99,16 +128,16 @@
         if ('@userDetails.RoleID' == "1") {
             columns.push({ "data": "UserID" });
 
-                columns.push({
-                    "data": null, render: function (data) {
-                        if (data.StatusDescription == "Closed") {
-                            return "<button class='btn btn-default btnview' data-faultid=" + data.FaultID + ">View</button>";
-                        }
-                        else {
-                            return "<button class='btn btn-default btnupdate' data-faultid=" + data.FaultID + ">Update</button>";
-                        }
+            columns.push({
+                "data": null, render: function (data) {
+                    if (data.StatusDescription == "Closed") {
+                        return "<button class='btn btn-default btnview' data-faultid=" + data.FaultID + ">View</button>";
                     }
-                });
+                    else {
+                        return "<button class='btn btn-default btnupdate' data-faultid=" + data.FaultID + ">Update</button>";
+                    }
+                }
+            });
 
         }
         else if ('@userDetails.RoleID' == "3") {
@@ -138,16 +167,28 @@
             });
         }
         else if ('@userDetails.RoleID' == "4") {
-
             columns.push({
                 "data": null, render: function (data) {
-                    return "<button class='btn btn-default btnupdate' data-faultid=" + data.FaultID + ">Update</button>";
+                    if (data.StatusDescription == "Closed") {
+                        return "<button class='btn btn-default btnview' data-faultid=" + data.FaultID + ">View</button>";
+                    }
+                    else {
+                        return "<button class='btn btn-default btnupdate' data-faultid=" + data.FaultID + ">Update</button>";
+                    }
+
                 }
             });
 
             columns.push({
                 "data": null, render: function (data) {
-                    return "<button class='btn btn-default addcomment' data-faultid=" + data.FaultID + " data-statusid="+ data.StatusID+"></button>";
+                    return "<button class='btn btn-default addcomment' data-faultid=" + data.FaultID + " data-statusid=" + data.StatusID + "></button>";
+                }
+            });
+        }
+        else if ('@userDetails.RoleID' == "5") {
+            columns.push({
+                "data": null, render: function (data) {                    
+                        return "<button class='btn btn-default btnview' data-faultid=" + data.FaultID + ">View</button>";
                 }
             });
         }
@@ -156,7 +197,12 @@
         $("#faultdetailsgrid").DataTable({
             ajax: {
                 url: "@Url.Action("GetFaultList","FaultManagement")",
-                type: "GET"
+                type: "GET",
+                traditional: true,
+                data: function (d) {
+                    d.status = $("#FilterStatusID").val();
+                    return d;
+                }
             },
             columns: columns
         });

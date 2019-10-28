@@ -19,6 +19,10 @@ namespace FRS.Controllers
         [Route("faultlist")]
         public PartialViewResult GetFaultDetailsView()
         {
+            CommonBAL bal = new CommonBAL();
+            var statusList = bal.GetFaultStatusList();
+            ViewBag.FaultStatusList = statusList;
+            ViewBag.SelectedFaultStatusList = statusList.Where(x => x.Text.ToLower() == "in progress" || x.Text.ToLower() == "new").Select(x => x.Value).ToList();
             return PartialView("FaultListView");
         }
 
@@ -124,7 +128,7 @@ namespace FRS.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetFaultList(int? status)
+        public JsonResult GetFaultList(int[] status)
         {
             List<FaultDetails> faultList = new List<FaultDetails>();
             CommonBAL commonBal = new CommonBAL();
@@ -137,7 +141,7 @@ namespace FRS.Controllers
 
 
                 FaultManagerBAL bal = new FaultManagerBAL();
-                faultList = bal.GetFaultList(status == null ? 0: (int)status, userDetails.RoleID, userDetails.ID);
+                faultList = bal.GetFaultList(string.Join(",", status), userDetails.RoleID, userDetails.ID);
                 if (userDetails.RoleID == 3)
                 {
                     var developerList = commonBal.GetListOfDevelopersByManagerId(userDetails.ID);

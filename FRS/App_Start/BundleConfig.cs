@@ -25,12 +25,14 @@ namespace FRS
             bundles.Add(new ScriptBundle("~/bundles/datatables").Include("~/Scripts/DataTables/jquery.dataTables.min.js", 
                 "~/Scripts/DataTables/dataTables.bootstrap.min.js",
                 "~/Scripts/moment.min.js",
-                "~/Scripts/bootstrap-datetimepicker.min.js"));
+                "~/Scripts/bootstrap-datetimepicker.min.js",
+                "~/Scripts/chosen.jquery.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/DataTables/css/dataTables.bootstrap.min.css",
                       "~/Content/bootstrap-datetimepicker.min.css",
+                      "~/Content/chosen.min.css",
                       "~/Content/site.css"));
         }
     }

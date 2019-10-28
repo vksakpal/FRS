@@ -70,26 +70,40 @@
 
             @if (userDetails.RoleID != 4)
             {
-                <div class="form-group row">
-                    <label for="staticEmail" class="col-sm-4 col-form-label">Fault Status:</label>
-                    <div class="col-sm-8">
-                        @Html.DropDownListFor(model => model.StatusID, Model.FaultStatusList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultStatusList, "Value", "Text"), "--Select--", new { @class = "form-control", @readonly = true })
+                if (Model.StatusDescription.ToLower() == "closed")
+                {
+                    <div class="form-group row">
+                        <label for="staticEmail" class="col-sm-4 col-form-label">Fault Status:</label>
+                        <div class="col-sm-8">
+                            @Html.DropDownListFor(model => model.StatusID, Model.FaultStatusList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultStatusList, "Value", "Text"), "--Select--", new { @class = "form-control", @readonly = true })
+                        </div>
                     </div>
-                </div>
-
+                }
+                else
+                {
+                    <div class="form-group row">
+                        <label for="staticEmail" class="col-sm-4 col-form-label">Fault Status:</label>
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(model => model.StatusDescription, new { @class = "form-control", @readonly = true })
+                        </div>
+                    </div>
+                }
             }
 
             <div class="form-group row">
                 <label for="staticEmail" class="col-sm-4 col-form-label">Fault Priority:</label>
                 <div class="col-sm-8">
-                    @if (userDetails.RoleID == 4)
+
+                    @if (userDetails.RoleID == 4 || Model.StatusDescription.ToLower() == "closed" || userDetails.RoleID == 5)
                     {
-                        @Html.DropDownListFor(model => model.FaultPriorityID, Model.FaultPriorityList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultPriorityList, "Value", "Text"), "--Select--", new { @class = "form-control", @readonly = true })
+                        @Html.DropDownListFor(model => model.FaultPriorityID, Model.FaultPriorityList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultPriorityList, "Value", "Text", ViewBag.SelectedFaultStatusList), "--Select--", new { @class = "form-control", @readonly = true })
                     }
                     else
                     {
                         @Html.DropDownListFor(model => model.FaultPriorityID, Model.FaultPriorityList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultPriorityList, "Value", "Text"), "--Select--", new { @class = "form-control" })
                     }
+
+
 
 
                 </div>
@@ -98,7 +112,7 @@
             <div class="form-group row">
                 <label for="staticEmail" class="col-sm-4 col-form-label">Product Name:</label>
                 <div class="col-sm-8">
-                    @if (userDetails.RoleID == 4)
+                    @if (userDetails.RoleID == 4 || Model.StatusDescription.ToLower() == "closed" || userDetails.RoleID == 5)
                     {
                         @Html.DropDownListFor(model => model.ProductID, Model.ProductList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.ProductList, "Value", "Text"), "--Select--", new { @class = "form-control", @readonly = true })
                     }
@@ -111,7 +125,7 @@
             <div class="form-group row">
                 <label for="staticEmail" class="col-sm-4 col-form-label">Fault Type:</label>
                 <div class="col-sm-8">
-                    @if (userDetails.RoleID == 4)
+                    @if (userDetails.RoleID == 4 || Model.StatusDescription.ToLower() == "closed" || userDetails.RoleID == 5)
                     {
                         @Html.DropDownListFor(model => model.FaultTypeID, Model.FaultTypeList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultTypeList, "Value", "Text"), "--Select--", new { @class = "form-control", @readonly = true })
                     }
@@ -124,12 +138,12 @@
             <div class="form-group row">
                 <label for="staticEmail" class="col-sm-4 col-form-label">Fault Description:</label>
                 <div class="col-sm-8">
-                    @if (userDetails.RoleID == 4)
+                    @if (userDetails.RoleID == 4 || Model.StatusDescription.ToLower() == "closed" || userDetails.RoleID == 5)
                     {
                         @Html.TextAreaFor(model => model.FaultDescription, 10, 10, new { @class = "form-control", @readonly = true })
                     }
                     else
-                    {
+                    {                        
                         @Html.TextAreaFor(model => model.FaultDescription, 10, 10, new { @class = "form-control" })
                     }
                 </div>
@@ -140,37 +154,48 @@
                     <label for="staticEmail" class="col-sm-4 col-form-label">Fault Reporting Date:</label>
                     <div class="col-sm-8">
                         @*@if (userDetails.RoleID == 4)
-                        {*@
-                            @Html.TextBoxFor(model => model.FaultReportingDate, new { @class = "form-control", @readonly = true })
+                            {*@
+                        @Html.TextBoxFor(model => model.FaultReportingDate, new { @class = "form-control", @readonly = true })
                         @*}
-                        else
-                        {
-                            @Html.TextBoxFor(model => model.FaultReportingDate, new { @class = "form-control" })
-                        }*@
+                            else
+                            {
+                                @Html.TextBoxFor(model => model.FaultReportingDate, new { @class = "form-control" })
+                            }*@
                     </div>
                 </div>
 
 
                 if (userDetails.RoleID == 4)
                 {
-                    <div class="form-group row">
-                        <label for="staticEmail" class="col-sm-4 col-form-label">Fault Status:</label>
-                        <div class="col-sm-8">
-                            @Html.DropDownListFor(model => model.StatusID, Model.FaultStatusList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultStatusList, "Value", "Text"), "--Select--", new { @class = "form-control" })
+                    if (Model.StatusDescription.ToLower() != "closed")
+                    {
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-sm-4 col-form-label">Fault Status:</label>
+                            <div class="col-sm-8">
+                                @Html.DropDownListFor(model => model.StatusID, Model.FaultStatusList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.FaultStatusList, "Value", "Text"), "--Select--", new { @class = "form-control" })
+                            </div>
                         </div>
-                    </div>
-
+                    }
+                    else
+                    {
+                        <div class="form-group row">
+                            <label for="staticEmail" class="col-sm-4 col-form-label">Fault Status:</label>
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(model => model.StatusDescription, new { @class = "form-control", @readonly = true })
+                            </div>
+                        </div>
+                    }
                 }
 
                 <div class="form-group row">
                     <label for="staticEmail" class="col-sm-4 col-form-label">Fault Resolved Date:</label>
                     <div class="col-sm-8">
-                        @if (userDetails.RoleID == 4)
+                        @if (userDetails.RoleID == 4 && Model.StatusDescription.ToLower() != "closed")
                         {
                             //@Html.TextBoxFor(model => model.FaultResolvedDate, new { @class = "form-control" })
 
                             <div class='input-group date' id='FaultResolvedDate'>
-                                <input type='text' class="form-control" id="FaultResolvedDate" value="@Model.FaultResolvedDate" />
+                                <input type='text' class="form-control" id="FaultResolvedDate" />
                                 <span class="input-group-addon datetimepicker">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
@@ -180,7 +205,7 @@
                         else
                         {
                             <div class='input-group date' id='FaultResolvedDate'>
-                                <input type='text' class="form-control" id="FaultResolvedDate" value="@Model.FaultResolvedDate" readonly />
+                                <input type='text' class="form-control" id="FaultResolvedDate" readonly />
                                 <span class="input-group-addon datetimepicker">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
@@ -191,7 +216,7 @@
                     </div>
                 </div>
 
-                if (userDetails.RoleID == 4)
+                if (userDetails.RoleID == 4 && Model.StatusDescription.ToLower() != "closed")
                 {
                     <div class="form-group row">
                         <label for="staticEmail" class="col-sm-4 col-form-label">Comment:</label>
@@ -235,11 +260,17 @@
             }
             else if (Model.FaultID > 0 && userDetails.RoleID == 4)
             {
-                <button type="button" class="btn btn-primary" id="btnUpdateFaultDeveloperPopup">Update Fault</button>
+                if (Model.StatusDescription.ToLower() != "closed")
+                {
+                    <button type="button" class="btn btn-primary" id="btnUpdateFaultDeveloperPopup">Update Fault</button>
+                }
             }
-            else
+            else if(userDetails.RoleID != 5)
             {
-                <button type="button" class="btn btn-primary" id="btnUpdateFaultPopup">Update Fault</button>
+                if (Model.StatusDescription.ToLower() != "closed")
+                {
+                    <button type="button" class="btn btn-primary" id="btnUpdateFaultPopup">Update Fault</button>
+                }
             }
 
         </div>
@@ -252,28 +283,31 @@
     $(document).ready(function () {
         if('@Model.FaultResolvedDate' != "")
         {
-            $("div.date").datetimepicker({
+            console.log('@Model.FaultResolvedDate');
+            $("div#FaultResolvedDate").datetimepicker({
                 date: new Date('@Model.FaultResolvedDate'),
-                format : 'DD/MM/YYYY HH:mm'
+                format : 'DD-MM-YYYY HH:mm'
             });
+            $("div#FaultResolvedDate").data("DateTimePicker").date('@Model.FaultResolvedDate');
         }
         else
         {
-            $("div.date").datetimepicker({
-                   format : 'DD/MM/YYYY HH:mm'
+            $("div#FaultResolvedDate").datetimepicker({
+                   format : 'DD-MM-YYYY HH:mm'
             });
         }
-        
+
+
+
 
         $("#btnAddFaultPopup").click(function () {
-
                 var faultDetails = {
                 "CustomerInfo": {
                     "Name": $("#CustomerInfo_Name").val(),
                     "Phone": $("#CustomerInfo_Phone").val(),
                     "Email": $("#CustomerInfo_Email").val()
                 },
-                "FaultDescription": $("#FaultTypeDescription").val(),
+                "FaultDescription": $("#FaultDescription").val(),
                 "ProductID": $("#ProductID option:selected").val(),
                 "FaultTypeID": $("#FaultTypeID option:selected").val(),
                 "StatusID": $("#StatusID option:selected").val(),
@@ -340,7 +374,6 @@
                 "FaultResolvedDate": $("#FaultResolvedDate").val(),
                 "StatusID": $("#StatusID option:selected").val()
             };
-           // debugger;
             $.ajax({
                 url: '@Url.Action("UpdateFaultDetails", "FaultManagement")',
                 ContentType: "application/json",

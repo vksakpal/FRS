@@ -9,7 +9,7 @@ namespace FRS.Business_Layer
 {
     public class FaultManagerBAL
     {
-        public List<FaultDetails> GetFaultList(int status, int roleId, int userID)
+        public List<FaultDetails> GetFaultList(string status, int roleId, int userID)
         {
             FaultManagerDAL dal = new FaultManagerDAL();
             return dal.GetFaultList(status, roleId, userID);
