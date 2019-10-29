@@ -12,6 +12,8 @@
     </div>
 </div>
 
+<div id="dvpopup" class="modal fade" role="dialog"></div>
+
 
 <table id="customergrid" class="table table-bordered">
     <thead>
@@ -28,6 +30,25 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#customergrid").DataTable();
+
+        $("#btncustomer").click(function () {
+            $.ajax({
+                url: '@Url.Action("AddCustomerView","Customer")',
+                type: 'GET',
+                success: function (htmlResponse) {
+                    $("#dvpopup").empty();
+                    $("#dvpopup").html(htmlResponse);
+                    $("#dvpopup").modal({
+                        show: true,
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                },
+                error: function () {
+                    alert("Error occured while adding customer.");
+                }
+            });
+        });
     });
 </script>
 

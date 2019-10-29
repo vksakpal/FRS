@@ -12,6 +12,8 @@
     </div>
 </div>
 
+<div id="dvpopup" role="dialog" class="modal fade"></div>
+
 <table id="usergrid" class="table table-bordered">
     <thead>
         <tr>
@@ -27,5 +29,24 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#usergrid").DataTable();
+
+        $("#btnadduser").click(function () {
+            $.ajax({
+                url: '@Url.Action("AddUpdateUserView","User")',
+                type: 'GET',
+                success: function (htmlResponse) {
+                    $("#dvpopup").empty();
+                    $("#dvpopup").html(htmlResponse);
+                    $("#dvpopup").modal({
+                        show: true,
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                },
+                error: function () {
+                    alert("Error occured while saving customer.");
+                }
+            });
+        });
     });
 </script>

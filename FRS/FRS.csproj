@@ -546,6 +546,8 @@
     <Content Include="Views\Shared\_LayoutPageLogin.cshtml" />
     <Content Include="Views\User\UserListView.cshtml" />
     <Content Include="Views\Customer\CustomerListView.cshtml" />
+    <Content Include="Views\Customer\AddCustomerView.cshtml" />
+    <Content Include="Views\User\AddUpdateUserView.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

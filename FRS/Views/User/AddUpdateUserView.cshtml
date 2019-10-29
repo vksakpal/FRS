@@ -1,0 +1,119 @@
+﻿@model FRS.Models.UserDetails
+
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">@ViewBag.ModalTitle</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row form-group">
+                @Html.HiddenFor(model => model.ID)
+                <div class="col-md-3">
+                    <span>User Name</span>
+                </div>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.UserID, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-3">
+                    <span>Role</span>
+                </div>
+                <div class="col-md-9">
+                    @Html.DropDownListFor(model => model.RoleID, Model.RoleList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.RoleList, "Value", "Text"), "--Select--", new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-3">
+                    <span>Manager</span>
+                </div>
+                <div class="col-md-9">
+                    @Html.DropDownListFor(model => model.ManagerId, Model.ManagerList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.ManagerList, "Value", "Text"), "--Select--", new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-3">
+                    <span>Expiry Date</span>
+                </div>
+                <div class="col-md-9">  
+                    <div class='input-group date' id='ExpiryDate'>
+                        <input type='text' class="form-control" id="ExpiryDate" />
+                        <span class="input-group-addon datetimepicker">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            @if (Model.ID == 0)
+            {
+                <button type="button" class="btn btn-primary" id="btnAddUserPopup">Add</button>
+            }
+            else
+            {
+                <button type="button" class="btn btn-primary" id="btnUpdateUserPopup">Update</button>
+            }
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+
+        if('@Model.ExpiryDate' != "")
+        {            
+            $("div#ExpiryDate").datetimepicker({
+                date: new Date('@Model.ExpiryDate'),
+                format : 'DD-MM-YYYY HH:mm'
+            });
+            $("div#ExpiryDate").data("DateTimePicker").date('@Model.ExpiryDate');
+        }
+        else
+        {
+            $("div#ExpiryDate").datetimepicker({
+                   format : 'DD-MM-YYYY HH:mm'
+            });
+        }
+
+        $("#btnAddUserPopup").click(function () {
+            var userDetails = {
+                "ID": $("#ID").val(),
+                "UserID": $("#UserID").val(),
+                "RoleID": $("#RoleID option:selected").val(),
+                "ManagerId": $("#ManagerId option:selected").val(),
+                "ExpiryDate": $("input#ExpiryDate").val()
+            };
+
+            $.ajax({
+                url: '@Url.Action("AddUpdateUser","User")',
+                type: "POST",
+                ContentType: 'application/json',
+                data: { "userDetails": userDetails },
+                success: function (data) {
+                    if (data == 1) {
+                        alert("Customer details have been saved successfully.");
+                        $("#dvpopup").modal("hide");
+                        $("#customergrid").DataTable().ajax.reload();
+                    }
+                    else {
+                        alert("Error occured while adding customer.");
+                    }
+                },
+                error: function () {
+                    alert("Error occured while adding customer.");
+                }
+            });
+        });
+    });
+</script>
+
+

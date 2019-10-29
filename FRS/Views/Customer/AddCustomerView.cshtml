@@ -1,0 +1,96 @@
+﻿@model FRS.Models.Customer
+
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">@ViewBag.ModalTitle</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row form-group">
+                @Html.HiddenFor(model => model.ID)
+                <div class="col-md-3">
+                    <span>First Name</span>
+                </div>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-3">
+                    <span>Last Name</span>
+                </div>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.LastName, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-3">
+                    <span>Email</span>
+                </div>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-md-3">
+                    <span>Phone</span>
+                </div>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.Phone, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            @if (Model.ID == 0)
+            {
+                <button type="button" class="btn btn-primary" id="btnAddCustomerPopup">Add</button>
+            }
+            else
+            {
+                <button type="button" class="btn btn-primary" id="btnUpdateCustomerPopup">Update</button>
+            }
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnAddCustomerPopup").click(function () {
+            var customer = {
+                "ID": $("#ID").val(),
+                "FirstName": $("#FirstName").val(),
+                "LastName": $("#LastName").val(),
+                "Email": $("#Email").val(),
+                "Phone": $("#Phone").val()
+            };
+
+            $.ajax({
+                url: '@Url.Action("AddUpdateCustomer","Customer")',
+                type: "POST",
+                ContentType: 'application/json',
+                data: { "customer": customer },
+                success: function (data) {
+                    if (data == 1) {
+                        alert("Customer details have been saved successfully.");
+                        $("#dvpopup").modal("hide");
+                        $("#customergrid").DataTable().ajax.reload();
+                    }
+                    else {
+                        alert("Error occured while adding customer.");
+                    }
+                },
+                error: function () {
+                    alert("Error occured while adding customer.");
+                }
+            });
+        });
+    });
+</script>
+
