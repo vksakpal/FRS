@@ -43,9 +43,13 @@ namespace FRS.DAL
             {
                 using (SQLiteConnection sqlite_conn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
+                    int userID = 0;
                     SQLiteCommand cmd = sqlite_conn.CreateCommand();
-                    cmd.CommandText = $"INSERT INTO TCustomer(Name, Phone, Email) VALUES('{customer.Name}',{customer.Phone},'{customer.Email}')";
                     sqlite_conn.Open();
+                    cmd.CommandText = $"INSERT INTO TUserDetails(UserID, UserPassword, RoleID,ManagerID) VALUES('{customer.Name}','{customer.Name}',2,NULL)";
+                    cmd.ExecuteNonQuery();
+                    userID = (int)sqlite_conn.LastInsertRowId;
+                    cmd.CommandText = $"INSERT INTO TCustomer(Name, Phone, Email, UserDetailsId) VALUES('{customer.Name}',{customer.Phone},'{customer.Email}',{userID})";
                     int count = cmd.ExecuteNonQuery();
 
                     if (count > 0)

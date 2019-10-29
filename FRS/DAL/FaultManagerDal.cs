@@ -99,35 +99,32 @@ namespace FRS.DAL
             {
                 using (SQLiteConnection sqlite_conn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
-                    int customerID = faultDetails.CustomerInfo.ID;
+                    int userDetailsId = 0;
                     DataTable dt = new DataTable();
                     StringBuilder sb = new StringBuilder();
                     SQLiteCommand cmd = sqlite_conn.CreateCommand();
 
-                    if (customerID == 0)
-                    {
-                        sb.Append($" SELECT CustomerID FROM TCustomer WHERE Phone = {faultDetails.CustomerInfo.Phone} AND Email = '{faultDetails.CustomerInfo.Email}' ");
+                        sb.Append($" SELECT UserDetailsId FROM TCustomer WHERE Phone = {faultDetails.CustomerInfo.Phone} AND Email = '{faultDetails.CustomerInfo.Email}' ");
                         cmd.CommandText = sb.ToString();
                         sqlite_conn.Open();
                         SQLiteDataAdapter ad = new SQLiteDataAdapter(cmd);
                         ad.Fill(dt);
                         if (dt.Rows.Count > 0)
                         {
-                            customerID = Convert.ToInt32(dt.Rows[0]["CustomerID"]);
+                            userDetailsId = Convert.ToInt32(dt.Rows[0]["UserDetailsId"]);
                         }
                         else
                         {
                             sb.Clear();
-                            sb.Append($" INSERT INTO TCustomer(Name, Phone,Email )VALUES('{faultDetails.CustomerInfo.Name}', {faultDetails.CustomerInfo.Phone}, '{faultDetails.CustomerInfo.Email}')");
-                            cmd.CommandText = sb.ToString();
+                            cmd.CommandText = $"INSERT INTO TUserDetails(UserID, UserPassword, RoleID,ManagerID) VALUES('{faultDetails.CustomerInfo.Name}','{faultDetails.CustomerInfo.Name}',2,NULL)";
                             cmd.ExecuteNonQuery();
-                            customerID = (int)sqlite_conn.LastInsertRowId;
-
+                            userDetailsId = (int)sqlite_conn.LastInsertRowId;
+                            cmd.CommandText = $"INSERT INTO TCustomer(Name, Phone, Email, UserDetailsId) VALUES('{faultDetails.CustomerInfo.Name}',{faultDetails.CustomerInfo.Phone},'{faultDetails.CustomerInfo.Email}',{userDetailsId})";
+                            cmd.ExecuteNonQuery();
                         }
-                    }
                     sb.Clear();
                     sb.Append(" INSERT INTO TFaultDetails (ProductId, StatusID, AssignedUserID, FaultReportingDate,CustomerID,FaultResolvedDate,FaultTypeID,FaultDescription,FaultPriority)  ");
-                    sb.Append($" VALUES ({faultDetails.ProductID}, {faultDetails.StatusID}, NULL, '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', {customerID},NULL, {faultDetails.FaultTypeID}, '{faultDetails.FaultDescription}',{faultDetails.FaultPriorityID}); ");
+                    sb.Append($" VALUES ({faultDetails.ProductID}, {faultDetails.StatusID}, NULL, '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', {userDetailsId},NULL, {faultDetails.FaultTypeID}, '{faultDetails.FaultDescription}',{faultDetails.FaultPriorityID}); ");
                     cmd.CommandText = sb.ToString();
                     cmd.ExecuteNonQuery();
                     faultId = (int)sqlite_conn.LastInsertRowId;

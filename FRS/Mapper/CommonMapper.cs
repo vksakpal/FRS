@@ -73,6 +73,27 @@ namespace FRS.Mapper
             return faultTypeList;
         }
 
+        public static List<SelectListItem> MapRolesDataTableToCollection(this DataTable dt)
+        {
+            List<SelectListItem> faultTypeList = new List<SelectListItem>();
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    faultTypeList.Add(new SelectListItem
+                    {
+
+                        Value = Convert.IsDBNull(dr["RoleID"]) ? string.Empty : Convert.ToString(dr["RoleID"]),
+                        Text = Convert.IsDBNull(dr["RoleDescription"]) ? string.Empty : Convert.ToString(dr["RoleDescription"]),
+
+                    });
+                }
+            }
+
+            return faultTypeList;
+        }
+
         public static List<SelectListItem> MapDeveloperDataTableToCollection(this DataTable dt)
         {
             List<SelectListItem> developerList = new List<SelectListItem>();

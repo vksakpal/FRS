@@ -84,6 +84,52 @@ namespace FRS.DAL
             return statusList;
         }
 
+        public List<SelectListItem> GetRolesList()
+        {
+            List<SelectListItem> statusList = new List<SelectListItem>();
+            try
+            {
+                DataTable dt = new DataTable();
+                using (SQLiteConnection sqlite_conn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
+                {
+                    SQLiteCommand cmd = sqlite_conn.CreateCommand();
+                    cmd.CommandText = $"SELECT * FROM TRoles";
+                    SQLiteDataAdapter ad = new SQLiteDataAdapter(cmd);
+                    ad.Fill(dt);
+                    statusList = dt.MapRolesDataTableToCollection();
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return statusList;
+        }
+
+        public List<SelectListItem> GetManagerList()
+        {
+            List<SelectListItem> statusList = new List<SelectListItem>();
+            try
+            {
+                DataTable dt = new DataTable();
+                using (SQLiteConnection sqlite_conn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
+                {
+                    SQLiteCommand cmd = sqlite_conn.CreateCommand();
+                    cmd.CommandText = $"SELECT * FROM TUserDetails where RoleID = 3";
+                    SQLiteDataAdapter ad = new SQLiteDataAdapter(cmd);
+                    ad.Fill(dt);
+                    statusList = dt.MapDeveloperDataTableToCollection();
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return statusList;
+        }
+
         public List<SelectListItem> GetListOfDevelopersByManagerId(int managerId)
         {
             List<SelectListItem> developerList = new List<SelectListItem>();
