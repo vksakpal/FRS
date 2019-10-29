@@ -153,7 +153,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Mapper\CommonMapper.cs" />
-    <Compile Include="Mapper\CustomerMapper.cs" />
+    <Compile Include="Mapper\AdminMapper.cs" />
     <Compile Include="Mapper\UserDetailsMapper.cs" />
     <Compile Include="Mapper\FaultDetailsMapper.cs" />
     <Compile Include="Models\Customer.cs" />
