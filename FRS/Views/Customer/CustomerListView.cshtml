@@ -21,15 +21,25 @@
             <th>Name</th>
             <th>Phone</th>
             <th>Email</th>
-            <th>Update/View</th>
-            <th>Delete</th>
+            @*<th>Update/View</th>
+            <th>Delete</th>*@
         </tr>
     </thead>
 </table>
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#customergrid").DataTable();
+        $("#customergrid").DataTable({
+            ajax: {
+                url: '@Url.Action("GetCustomerList","Customer")',
+                type:'GET'
+            },
+            columns: [
+                { "data": "Name" },
+                { "data": "Phone" },
+                { "data": "Email" }
+            ]
+        });
 
         $("#btncustomer").click(function () {
             $.ajax({

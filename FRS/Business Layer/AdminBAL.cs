@@ -21,5 +21,17 @@ namespace FRS.Business_Layer
             return dal.AddCustomer(customer);
         }
 
+        public List<Customer> GetCustomerList()
+        {
+            AdminDAL dal = new AdminDAL();
+            return dal.GetCustomerList();
+        }
+
+        public List<UserDetails> GetUserList()
+        {
+            AdminDAL dal = new AdminDAL();
+            return dal.GetUserList();
+        }
+
     }
 }

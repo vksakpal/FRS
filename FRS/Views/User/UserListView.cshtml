@@ -20,15 +20,25 @@
             <th>User Name</th>
             <th>Role</th>
             <th>Manager</th>
-            <th>Update/View</th>
-            <th>Delete</th>                  
+            @*<th>Update/View</th>
+            <th>Delete</th>*@                  
         </tr>
     </thead>
 </table>
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#usergrid").DataTable();
+        $("#usergrid").DataTable({
+             ajax: {
+                url: '@Url.Action("GetUserList","User")',
+                type:'GET'
+            },
+            columns: [
+                { "data": "UserID" },
+                { "data": "RoleDescription" },
+                { "data": "ManagerName" }
+            ]
+        });
 
         $("#btnadduser").click(function () {
             $.ajax({

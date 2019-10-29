@@ -100,11 +100,12 @@ namespace FRS.DAL
                 using (SQLiteConnection sqlite_conn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
                     int userDetailsId = 0;
+                    int customerId = 0;
                     DataTable dt = new DataTable();
                     StringBuilder sb = new StringBuilder();
                     SQLiteCommand cmd = sqlite_conn.CreateCommand();
 
-                        sb.Append($" SELECT UserDetailsId FROM TCustomer WHERE Phone = {faultDetails.CustomerInfo.Phone} AND Email = '{faultDetails.CustomerInfo.Email}' ");
+                        sb.Append($" SELECT CustomerID FROM TCustomer WHERE Phone = {faultDetails.CustomerInfo.Phone} AND Email = '{faultDetails.CustomerInfo.Email}' ");
                         cmd.CommandText = sb.ToString();
                         sqlite_conn.Open();
                         SQLiteDataAdapter ad = new SQLiteDataAdapter(cmd);
@@ -121,10 +122,12 @@ namespace FRS.DAL
                             userDetailsId = (int)sqlite_conn.LastInsertRowId;
                             cmd.CommandText = $"INSERT INTO TCustomer(Name, Phone, Email, UserDetailsId) VALUES('{faultDetails.CustomerInfo.Name}',{faultDetails.CustomerInfo.Phone},'{faultDetails.CustomerInfo.Email}',{userDetailsId})";
                             cmd.ExecuteNonQuery();
+                            customerId = (int)sqlite_conn.LastInsertRowId;
+                            
                         }
                     sb.Clear();
                     sb.Append(" INSERT INTO TFaultDetails (ProductId, StatusID, AssignedUserID, FaultReportingDate,CustomerID,FaultResolvedDate,FaultTypeID,FaultDescription,FaultPriority)  ");
-                    sb.Append($" VALUES ({faultDetails.ProductID}, {faultDetails.StatusID}, NULL, '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', {userDetailsId},NULL, {faultDetails.FaultTypeID}, '{faultDetails.FaultDescription}',{faultDetails.FaultPriorityID}); ");
+                    sb.Append($" VALUES ({faultDetails.ProductID}, {faultDetails.StatusID}, NULL, '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', {customerId},NULL, {faultDetails.FaultTypeID}, '{faultDetails.FaultDescription}',{faultDetails.FaultPriorityID}); ");
                     cmd.CommandText = sb.ToString();
                     cmd.ExecuteNonQuery();
                     faultId = (int)sqlite_conn.LastInsertRowId;

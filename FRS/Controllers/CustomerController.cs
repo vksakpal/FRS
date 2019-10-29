@@ -1,4 +1,5 @@
-﻿using FRS.Models;
+﻿using FRS.Business_Layer;
+using FRS.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +16,20 @@ namespace FRS.Controllers
             return View();
         }
 
+
+        [HttpGet]
+        public JsonResult GetCustomerList()
+        {
+            AdminBAL bal = new AdminBAL();
+            var customerList = bal.GetCustomerList();
+            return Json(new { data = customerList }, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpGet]
         public PartialViewResult AddCustomerView(int? customerId)
         {
             Customer objCustomer = new Customer();
-            if(customerId == null)
+            if (customerId == null)
             {
                 ViewBag.ModalTitle = "Add Customer";
 
@@ -28,23 +38,34 @@ namespace FRS.Controllers
             {
                 ViewBag.ModalTitle = "Update Customer";
             }
-            
+
             return PartialView(objCustomer);
         }
 
         [HttpPost]
         public JsonResult AddUpdateCustomer(Customer customer)
         {
-            if (customer.ID == 0)
+            bool result = true;
+
+            try
             {
-                //Todo: Call Add customer Bal
+                if (customer.ID == 0)
+                {
+                    AdminBAL bal = new AdminBAL();
+                    result = bal.AddCustomer(customer);
+                }
+                else
+                {
+                    //Todo: Call Update customer Bal
+                }
             }
-            else
+            catch
             {
-                //Todo: Call Update customer Bal
+                result = false;
             }
 
-            return Json(1, JsonRequestBehavior.AllowGet);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
     }
 }

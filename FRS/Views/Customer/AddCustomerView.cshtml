@@ -77,7 +77,7 @@
                 ContentType: 'application/json',
                 data: { "customer": customer },
                 success: function (data) {
-                    if (data == 1) {
+                    if (data == true) {
                         alert("Customer details have been saved successfully.");
                         $("#dvpopup").modal("hide");
                         $("#customergrid").DataTable().ajax.reload();

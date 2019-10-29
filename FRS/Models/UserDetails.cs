@@ -16,5 +16,7 @@ namespace FRS.Models
         public int ManagerId { get; set; }
         public List<SelectListItem> RoleList { get; set; }
         public List<SelectListItem> ManagerList { get; set; }
+        public string ManagerName { get; set; }
+        public string RoleDescription { get; set; }
     }
 }

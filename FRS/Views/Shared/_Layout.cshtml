@@ -11,6 +11,9 @@
     @Scripts.Render("~/bundles/datatables")
 </head>
 <body>
+    @{
+        var userDetails = ((FRS.Models.MyPrincipal)HttpContext.Current.User).User;
+    }
     @if (HttpContext.Current.User.Identity.IsAuthenticated)
     {
         <div class="navbar navbar-inverse navbar-fixed-top">
@@ -24,14 +27,17 @@
                     @Html.ActionLink("FRS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
                 </div>
                 <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav mr-auto">
-                        <li>@Html.ActionLink("Fault List", "Index", "Home")</li>
-                        <li>@Html.ActionLink("Users", "UserListView", "User")</li>
-                        <li>@Html.ActionLink("Customer", "CustomerListView", "Customer")</li>
-                    </ul>
+                    @if (userDetails.RoleID == 5)
+                    {
+                        <ul class="nav navbar-nav mr-auto">
+                            <li>@Html.ActionLink("Fault List", "Index", "Home")</li>
+                            <li>@Html.ActionLink("Users", "UserListView", "User")</li>
+                            <li>@Html.ActionLink("Customer", "CustomerListView", "Customer")</li>
+                        </ul>
+                    }
                     <span class="navbar-text text-right" style="float:right;">
                         Hi @HttpContext.Current.User.Identity.Name
-                        @Html.ActionLink("Logout", "Logout", "Auth", null, new { @class ="btn btn-default" })
+                        @Html.ActionLink("Logout", "Logout", "Auth", null, new { @class = "btn btn-default" })
                     </span>
                 </div>
             </div>

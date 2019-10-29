@@ -17,6 +17,16 @@ namespace FRS.Controllers
         }
 
         [HttpGet]
+        public JsonResult GetUserList()
+        {
+            AdminBAL bal = new AdminBAL();
+            var userList = bal.GetUserList();
+            return Json(new { data = userList }, JsonRequestBehavior.AllowGet);
+        }
+
+
+
+        [HttpGet]
         public PartialViewResult AddUpdateUserView(int? Id)
         {
             UserDetails userDetails = new UserDetails();
@@ -63,16 +73,25 @@ namespace FRS.Controllers
         [HttpPost]
         public JsonResult AddUpdateUser(UserDetails userDetails)
         {
-            if (userDetails.ID == 0)
+            bool result = true;
+            try
             {
-                //Todo: Call Add customer Bal
+                if (userDetails.ID == 0)
+                {
+                    AdminBAL bal = new AdminBAL();
+                    result = bal.AddUserDetails(userDetails);
+                }
+                else
+                {
+                    //Todo: Call Update customer Bal
+                }
             }
-            else
+            catch
             {
-                //Todo: Call Update customer Bal
+                result = false;
             }
-
-            return Json(1, JsonRequestBehavior.AllowGet);
+                        
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
     }
 }

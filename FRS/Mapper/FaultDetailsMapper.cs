@@ -17,6 +17,24 @@ namespace FRS.Mapper
             {
                 foreach(DataRow dr in dt.Rows)
                 {
+                    var customerName = Convert.IsDBNull(dr["CustomerName"]) ? string.Empty : Convert.ToString(dr["CustomerName"]);
+                    string firstName = string.Empty;
+                    string lastName = string.Empty;
+
+                    if(!string.IsNullOrEmpty(customerName))
+                    {
+                        var customer = customerName.Split(' ');
+                        if(customer != null && customer.Length > 0)
+                        {
+                            firstName = customer[0];
+                            if(customer.Length > 1)
+                            {
+                                lastName = customer[1];
+                            }
+                        }
+
+                    }
+
                     faultDetailsList.Add(new FaultDetails
                     {
                         FaultID = Convert.IsDBNull(dr["FaultID"]) ? 0: Convert.ToInt32(dr["FaultID"]),
@@ -30,7 +48,8 @@ namespace FRS.Mapper
                         CustomerInfo = new Customer
                         {
                             ID = Convert.IsDBNull(dr["CustomerID"]) ? 0 : Convert.ToInt32(dr["CustomerID"]),
-                            Name = Convert.IsDBNull(dr["CustomerName"]) ? string.Empty : Convert.ToString(dr["CustomerName"]),
+                             FirstName = firstName,
+                             LastName = lastName,
                             Email = Convert.IsDBNull(dr["Email"]) ? string.Empty : Convert.ToString(dr["Email"]),
                             Phone = Convert.IsDBNull(dr["Phone"]) ? string.Empty : Convert.ToString(dr["Phone"]),
                         },

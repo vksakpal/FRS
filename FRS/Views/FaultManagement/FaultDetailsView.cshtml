@@ -70,7 +70,7 @@
 
             @if (userDetails.RoleID != 4)
             {
-                if (Model.StatusDescription.ToLower() == "closed")
+                if (Model.StatusDescription.ToLower() != "closed")
                 {
                     <div class="form-group row">
                         <label for="staticEmail" class="col-sm-4 col-form-label">Fault Status:</label>
