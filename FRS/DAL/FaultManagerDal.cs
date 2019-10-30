@@ -92,11 +92,12 @@ namespace FRS.DAL
             return faultDetailsList;
         }
 
-        public int AddFaultDetails(FaultDetails faultDetails)
+        public int AddFaultDetails(FaultDetails faultDetails,UserDetails userDetails)
         {
             int faultId = 0;
             try
             {
+                
                 using (SQLiteConnection sqlite_conn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
                     int userDetailsId = 0;
@@ -104,7 +105,21 @@ namespace FRS.DAL
                     DataTable dt = new DataTable();
                     StringBuilder sb = new StringBuilder();
                     SQLiteCommand cmd = sqlite_conn.CreateCommand();
-
+                    if (userDetails.RoleID == 2)
+                    {
+                        sb.Append($" SELECT CustomerID FROM TCustomer WHERE UserDetailsId = {userDetails.ID}");
+                        cmd.CommandText = sb.ToString();
+                        sqlite_conn.Open();
+                        SQLiteDataAdapter ad = new SQLiteDataAdapter(cmd);
+                        ad.Fill(dt);
+                        if (dt.Rows.Count > 0)
+                        {
+                            customerId = Convert.ToInt32(dt.Rows[0]["CustomerID"]);
+                        }
+                    }
+                    else
+                    {
+                        sb.Clear();
                         sb.Append($" SELECT CustomerID FROM TCustomer WHERE Phone = {faultDetails.CustomerInfo.Phone} AND Email = '{faultDetails.CustomerInfo.Email}' ");
                         cmd.CommandText = sb.ToString();
                         sqlite_conn.Open();
@@ -112,7 +127,7 @@ namespace FRS.DAL
                         ad.Fill(dt);
                         if (dt.Rows.Count > 0)
                         {
-                            userDetailsId = Convert.ToInt32(dt.Rows[0]["UserDetailsId"]);
+                            customerId = Convert.ToInt32(dt.Rows[0]["CustomerID"]);
                         }
                         else
                         {
@@ -123,8 +138,9 @@ namespace FRS.DAL
                             cmd.CommandText = $"INSERT INTO TCustomer(Name, Phone, Email, UserDetailsId) VALUES('{faultDetails.CustomerInfo.Name}',{faultDetails.CustomerInfo.Phone},'{faultDetails.CustomerInfo.Email}',{userDetailsId})";
                             cmd.ExecuteNonQuery();
                             customerId = (int)sqlite_conn.LastInsertRowId;
-                            
+
                         }
+                    }
                     sb.Clear();
                     sb.Append(" INSERT INTO TFaultDetails (ProductId, StatusID, AssignedUserID, FaultReportingDate,CustomerID,FaultResolvedDate,FaultTypeID,FaultDescription,FaultPriority)  ");
                     sb.Append($" VALUES ({faultDetails.ProductID}, {faultDetails.StatusID}, NULL, '{DateTime.Now:yyyy-MM-dd HH:mm:ss}', {customerId},NULL, {faultDetails.FaultTypeID}, '{faultDetails.FaultDescription}',{faultDetails.FaultPriorityID}); ");

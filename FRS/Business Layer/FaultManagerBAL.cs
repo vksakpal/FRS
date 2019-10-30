@@ -21,10 +21,10 @@ namespace FRS.Business_Layer
             return dal.GetFaultListByFaultID(faultId);
         }
 
-        public int AddFaultDetails(FaultDetails faultDetails)
+        public int AddFaultDetails(FaultDetails faultDetails,UserDetails userDetails)
         {
             FaultManagerDAL dal = new FaultManagerDAL();
-            return dal.AddFaultDetails(faultDetails);
+            return dal.AddFaultDetails(faultDetails, userDetails);
         }
 
         public void UpdateFaultDetails(FaultDetails faultDetails)

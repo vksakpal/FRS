@@ -73,7 +73,7 @@ namespace FRS.Controllers
         {
             int result = 0;
             int faultId = 0;
-
+            UserDetails userDetails = ((MyPrincipal)HttpContext.User).User;
             if (faultDetails == null)
             {
                 result = 1;
@@ -82,7 +82,7 @@ namespace FRS.Controllers
             try
             {
                 FaultManagerBAL bal = new FaultManagerBAL();
-                faultId = bal.AddFaultDetails(faultDetails);
+                faultId = bal.AddFaultDetails(faultDetails,userDetails);
                 result = 2;
             }
             catch (Exception ex)
