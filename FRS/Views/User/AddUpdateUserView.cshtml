@@ -33,7 +33,7 @@
                     <span>Manager</span>
                 </div>
                 <div class="col-md-9">
-                    @Html.DropDownListFor(model => model.ManagerId, Model.ManagerList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.ManagerList, "Value", "Text"), "--Select--", new { @class = "form-control" })
+                    @Html.DropDownListFor(model => model.ManagerId, Model.ManagerList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.ManagerList, "Value", "Text"), "--Select--", new { @class = "form-control"})
                 </div>
             </div>
 
@@ -67,8 +67,6 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-
-
         if('@Model.ExpiryDate' != "")
         {            
             $("div#ExpiryDate").datetimepicker({

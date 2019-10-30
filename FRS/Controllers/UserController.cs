@@ -31,35 +31,9 @@ namespace FRS.Controllers
         {
             UserDetails userDetails = new UserDetails();
             CommonBAL bal = new CommonBAL();
-            userDetails.RoleList = new List<SelectListItem>
-            {
-                new SelectListItem
-                {
-                     Value = "1",
-                     Text = "Help Desk"
-                },
-                new SelectListItem
-                {
-                     Value = "2",
-                     Text = "Manager"
-                }
-            };
-
-            userDetails.ManagerList = new List<SelectListItem>
-            {
-                new SelectListItem
-                {
-                     Value = "1",
-                     Text = "Tina"
-                },
-                new SelectListItem
-                {
-                     Value = "2",
-                     Text = "Brenda"
-                }
-            };
-
-            if (Id== null)
+            userDetails.RoleList = bal.GetRolesList();
+            userDetails.ManagerList = bal.GetListOfManagers();
+            if (Id == null)
             {
                 ViewBag.ModalTitle = "Add User";
             }
@@ -90,7 +64,7 @@ namespace FRS.Controllers
             {
                 result = false;
             }
-                        
+
             return Json(result, JsonRequestBehavior.AllowGet);
         }
     }
