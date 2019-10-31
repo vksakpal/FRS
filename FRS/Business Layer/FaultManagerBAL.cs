@@ -27,10 +27,10 @@ namespace FRS.Business_Layer
             return dal.AddFaultDetails(faultDetails, userDetails);
         }
 
-        public void UpdateFaultDetails(FaultDetails faultDetails)
+        public void UpdateFaultDetails(FaultDetails faultDetails, int roleId)
         {
             FaultManagerDAL dal = new FaultManagerDAL();
-            dal.UpdateFaultDetails(faultDetails);
+            dal.UpdateFaultDetails(faultDetails, roleId);
         }
 
         public bool AssignFault(int faultId, int userId)

@@ -61,6 +61,33 @@ namespace FRS.DAL
 
                         sb.Append($" (FD.AssignedUserID IS NULL OR FD.AssignedUserID IN(Select ID from TUserDetails where ManagerID = {userId}))");
                     }
+                    else if(roleId == 2)
+                    {
+
+                        sb.Append($" SELECT CustomerID FROM TCustomer WHERE UserDetailsId = {userId}");
+                        cmd.CommandText = sb.ToString();
+                        con.Open();
+                        SQLiteDataAdapter ad1 = new SQLiteDataAdapter(cmd);
+                        ad1.Fill(dt);
+                        int customerId = 0;
+                        if (dt.Rows.Count > 0)
+                        {
+                            customerId = Convert.ToInt32(dt.Rows[0]["CustomerID"]);
+                        }
+                        sb.Clear();
+                        sb.Append("SELECT");
+                        sb.Append(" FD.FaultID, FD.ProductID, P.ProductName, FD.StatusID, S.StatusDescription, UD.UserID, FD.AssignedUserID, FD.FaultReportingDate,");
+                        sb.Append(" FD.CustomerID, FD.FaultResolvedDate, FD.FaultTypeID, FT.FaultTypeDescription, FD.FaultDescription, C.Name as CustomerName,");
+                        sb.Append(" FD.FaultPriority, C.Phone, C.Email");
+                        sb.Append(" FROM TFaultDetails FD");
+                        sb.Append(" LEFT JOIN TPRODUCT P ON FD.ProductID = P.ProductID");
+                        sb.Append(" LEFT JOIN TStatus S on FD.StatusID = S.StatusID");
+                        sb.Append(" LEFT JOIN TUserDetails UD on FD.AssignedUserID = UD.ID");
+                        sb.Append(" LEFT JOIN TFaultTypes FT on FD.FaultTypeID = FT.FaultTypeId");
+                        sb.Append(" INNER JOIN TCustomer C on FD.CustomerID = C.CustomerID");
+                        sb.Append($" WHERE FD.StatusID IN({status})");
+                        sb.Append($" AND FD.CustomerID = {customerId}");
+                    }
                     else
                     {
                         sb.Append("SELECT");
@@ -72,9 +99,8 @@ namespace FRS.DAL
                         sb.Append(" LEFT JOIN TStatus S on FD.StatusID = S.StatusID");
                         sb.Append(" LEFT JOIN TUserDetails UD on FD.AssignedUserID = UD.ID");
                         sb.Append(" LEFT JOIN TFaultTypes FT on FD.FaultTypeID = FT.FaultTypeId");
-                        sb.Append(" LEFT JOIN TCustomer C on FD.CustomerID = C.CustomerID");
-                        
-                            sb.Append($" WHERE FD.StatusID IN({status})");
+                        sb.Append(" LEFT JOIN TCustomer C on FD.CustomerID = C.CustomerID");                        
+                        sb.Append($" WHERE FD.StatusID IN({status})");
                       
                     }
                     cmd.CommandText = sb.ToString();
@@ -147,7 +173,6 @@ namespace FRS.DAL
                     cmd.CommandText = sb.ToString();
                     cmd.ExecuteNonQuery();
                     faultId = (int)sqlite_conn.LastInsertRowId;
-
                 }
             }
             catch (Exception ex)
@@ -157,21 +182,29 @@ namespace FRS.DAL
             return faultId;
         }
 
-        public void UpdateFaultDetails(FaultDetails faultDetails)
+        public void UpdateFaultDetails(FaultDetails faultDetails, int roleId  = 0)
         {
             try
             {
                 using (SQLiteConnection sqlite_conn = new SQLiteConnection(ConfigurationManager.ConnectionStrings["FRSConnectionString"].ConnectionString))
                 {
                     SQLiteCommand cmd = sqlite_conn.CreateCommand();
-                    if (String.IsNullOrEmpty(faultDetails.FaultResolvedDate))
+                    if(roleId == 2)
                     {
-                        cmd.CommandText = $"UPDATE TFaultDetails SET ProductId = {faultDetails.ProductID}, StatusID = {faultDetails.StatusID}, FaultResolvedDate = NULL, FaultTypeID = {faultDetails.FaultTypeID}, FaultDescription = '{faultDetails.FaultDescription}', FaultPriority = {faultDetails.FaultPriorityID} where FaultID = {faultDetails.FaultID}";
+                        cmd.CommandText = $"UPDATE TFaultDetails SET ProductId = {faultDetails.ProductID},  FaultTypeID = {faultDetails.FaultTypeID}, FaultDescription = '{faultDetails.FaultDescription}' where FaultID = {faultDetails.FaultID}";
                     }
                     else
                     {
-                        cmd.CommandText = $"UPDATE TFaultDetails SET ProductId = {faultDetails.ProductID}, StatusID = {faultDetails.StatusID}, FaultResolvedDate = '{Convert.ToDateTime(faultDetails.FaultResolvedDate):yyyy-MM-dd HH:mm:ss}', FaultTypeID = {faultDetails.FaultTypeID}, FaultDescription = '{faultDetails.FaultDescription}', FaultPriority = {faultDetails.FaultPriorityID} where FaultID = {faultDetails.FaultID}";
+                        if (String.IsNullOrEmpty(faultDetails.FaultResolvedDate))
+                        {
+                            cmd.CommandText = $"UPDATE TFaultDetails SET ProductId = {faultDetails.ProductID}, StatusID = {faultDetails.StatusID}, FaultResolvedDate = NULL, FaultTypeID = {faultDetails.FaultTypeID}, FaultDescription = '{faultDetails.FaultDescription}', FaultPriority = {faultDetails.FaultPriorityID} where FaultID = {faultDetails.FaultID}";
+                        }
+                        else
+                        {
+                            cmd.CommandText = $"UPDATE TFaultDetails SET ProductId = {faultDetails.ProductID}, StatusID = {faultDetails.StatusID}, FaultResolvedDate = '{Convert.ToDateTime(faultDetails.FaultResolvedDate):yyyy-MM-dd HH:mm:ss}', FaultTypeID = {faultDetails.FaultTypeID}, FaultDescription = '{faultDetails.FaultDescription}', FaultPriority = {faultDetails.FaultPriorityID} where FaultID = {faultDetails.FaultID}";
+                        }
                     }
+                    
                     sqlite_conn.Open();
                     cmd.ExecuteNonQuery();
                 }

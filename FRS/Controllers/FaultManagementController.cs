@@ -81,7 +81,12 @@ namespace FRS.Controllers
 
             try
             {
-                FaultManagerBAL bal = new FaultManagerBAL();
+                if(userDetails.RoleID == 2)
+                {
+                    faultDetails.FaultPriorityID = 1;
+                }
+
+                FaultManagerBAL bal = new FaultManagerBAL();                
                 faultId = bal.AddFaultDetails(faultDetails,userDetails);
                 result = 2;
             }
@@ -114,7 +119,7 @@ namespace FRS.Controllers
                 }
                 else
                 {
-                    bal.UpdateFaultDetails(faultDetails);
+                    bal.UpdateFaultDetails(faultDetails,userDetails.RoleID);
                 }
                 
                 result = 2;

@@ -2,7 +2,7 @@
     var userDetails = ((FRS.Models.MyPrincipal)HttpContext.Current.User).User;
 }
 
-@if (userDetails.RoleID == 1)
+@if (userDetails.RoleID == 1 || userDetails.RoleID == 2)
 {
     <div class="row form-group">
         <div class="col-md-6">
@@ -27,34 +27,54 @@ else
         </div>
     </div>
 }
+@if (userDetails.RoleID == 2)
+{
+    <table id="faultdetailsgrid" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Request Number</th>
+                <th>Fault Type</th>
+                <th>Fault Description</th>
+                <th>Product Name</th>
+                <th>Status</th>
+                <th>Reoprted Date</th>
+                <th>Resolved Date</th>
+                <th>Update/View</th>
+            </tr>
+        </thead>
+    </table>
+}
+else
+{
+    <table id="faultdetailsgrid" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Request Number</th>
+                <th>Customer Name</th>
+                <th>Fault Type</th>
+                <th>Fault Description</th>
+                <th>Product Name</th>
+                <th>Status</th>
+                <th>Reoprted Date</th>
+                <th>Resolved Date</th>
+                <th>Fault Priority</th>
+                @if (userDetails.RoleID == 3 || userDetails.RoleID == 1)
+                {
+                    <th>Assigned User</th>
+                }
+
+                <th>Update/View</th>
+
+                @if (userDetails.RoleID == 4)
+                {
+                    <th>Add Comment</th>
+                }
+            </tr>
+        </thead>
+    </table>
+}
 
 
-<table id="faultdetailsgrid" class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Request Number</th>
-            <th>Customer Name</th>
-            <th>Fault Type</th>
-            <th>Fault Description</th>
-            <th>Product Name</th>
-            <th>Status</th>
-            <th>Reoprted Date</th>
-            <th>Resolved Date</th>
-            <th>Fault Priority</th>
-            @if (userDetails.RoleID == 3 || userDetails.RoleID == 1)
-            {
-                <th>Assigned User</th>
-            }
-
-            <th>Update/View</th>
-
-            @if (userDetails.RoleID == 4)
-            {
-                <th>Add Comment</th>
-            }
-        </tr>
-    </thead>
-</table>
 
 
 <div id="dvupdateaddfault" class="modal fade" role="dialog">
@@ -99,7 +119,31 @@ else
             });
         });
 
-        var columns = [
+        var columns = [];
+        if ('@userDetails.RoleID' == '2') {
+            columns = [
+                { "data": "FaultID" },
+                { "data": "FaultTypeDescription" },
+                { "data": "FaultDescription" },
+                { "data": "ProductName" },
+                { "data": "StatusDescription", "searchable": false },
+                { "data": "FaultReportingDate" },
+                { "data": "FaultResolvedDate" },
+                {
+                    "data": null, render: function (data) {
+                        if (data.StatusDescription == "Closed") {
+                            return "<button class='btn btn-default btnview' data-faultid=" + data.FaultID + ">View</button>";
+                        }
+                        else {
+                            return "<button class='btn btn-default btnupdate' data-faultid=" + data.FaultID + ">Update</button>";
+                        }
+                    }
+                }
+            ];
+
+        }
+        else {
+            columns= [
             { "data": "FaultID" },
             { "data": "CustomerInfo.Name" },
             { "data": "FaultTypeDescription" },
@@ -187,11 +231,13 @@ else
         }
         else if ('@userDetails.RoleID' == "5") {
             columns.push({
-                "data": null, render: function (data) {                    
+                "data": null, render: function (data) {
                         return "<button class='btn btn-default btnview' data-faultid=" + data.FaultID + ">View</button>";
                 }
             });
         }
+        }
+
 
 
         $("#faultdetailsgrid").DataTable({
