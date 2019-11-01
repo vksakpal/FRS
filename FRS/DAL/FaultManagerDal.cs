@@ -147,7 +147,7 @@ namespace FRS.DAL
                     else
                     {
                         sb.Clear();
-                        sb.Append($" SELECT CustomerID FROM TCustomer WHERE Phone = {faultDetails.CustomerInfo.Phone} AND Email = '{faultDetails.CustomerInfo.Email}' ");
+                        sb.Append($" SELECT CustomerID FROM TCustomer WHERE Phone = '{faultDetails.CustomerInfo.Phone}' AND Email = '{faultDetails.CustomerInfo.Email}' ");
                         cmd.CommandText = sb.ToString();
                         sqlite_conn.Open();
                         SQLiteDataAdapter ad = new SQLiteDataAdapter(cmd);
@@ -159,10 +159,10 @@ namespace FRS.DAL
                         else
                         {
                             sb.Clear();
-                            cmd.CommandText = $"INSERT INTO TUserDetails(UserID, UserPassword, RoleID,ManagerID) VALUES('{faultDetails.CustomerInfo.Name}','{faultDetails.CustomerInfo.Name}',2,NULL)";
+                            cmd.CommandText = $"INSERT INTO TUserDetails(UserID, UserPassword, RoleID,ManagerID) VALUES('{faultDetails.CustomerInfo.FirstName}','{faultDetails.CustomerInfo.FirstName}',2,NULL)";
                             cmd.ExecuteNonQuery();
                             userDetailsId = (int)sqlite_conn.LastInsertRowId;
-                            cmd.CommandText = $"INSERT INTO TCustomer(Name, Phone, Email, UserDetailsId) VALUES('{faultDetails.CustomerInfo.Name}',{faultDetails.CustomerInfo.Phone},'{faultDetails.CustomerInfo.Email}',{userDetailsId})";
+                            cmd.CommandText = $"INSERT INTO TCustomer(Name, Phone, Email, UserDetailsId) VALUES('{faultDetails.CustomerInfo.Name}','{faultDetails.CustomerInfo.Phone}','{faultDetails.CustomerInfo.Email}',{userDetailsId})";
                             cmd.ExecuteNonQuery();
                             customerId = (int)sqlite_conn.LastInsertRowId;
 
