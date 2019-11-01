@@ -74,6 +74,7 @@ namespace FRS.DAL
                         {
                             customerId = Convert.ToInt32(dt.Rows[0]["CustomerID"]);
                         }
+                        dt.Clear();
                         sb.Clear();
                         sb.Append("SELECT");
                         sb.Append(" FD.FaultID, FD.ProductID, P.ProductName, FD.StatusID, S.StatusDescription, UD.UserID, FD.AssignedUserID, FD.FaultReportingDate,");
