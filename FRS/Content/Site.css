@@ -45,3 +45,8 @@ textarea {
 .datetimepicker{
     width:0%!important;
 }
+
+.navbar-inverse .navbar-nav > li > a, .navbar-inverse .navbar-brand, .navbar-inverse .navbar-text {
+    color: #fff;
+}
+

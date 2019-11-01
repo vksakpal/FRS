@@ -12,9 +12,30 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/datatables")
+
+    <style type="text/css">
+        body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            display: table;
+        }
+
+        body {
+            /*display: table-cell;*/
+            vertical-align: middle;
+        }
+
+        form {
+            display: table; /* shrinks to fit content */
+            margin: auto;
+            width:50%;
+        }
+    </style>
 </head>
 <body>
-    <div>
+    <div class="container">
         @RenderBody()
     </div>
 </body>

@@ -16,7 +16,7 @@
     }
     @if (HttpContext.Current.User.Identity.IsAuthenticated)
     {
-        <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar navbar-inverse navbar-fixed-top" style="background-color:#03256C;border-color:#03256C;">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -27,7 +27,7 @@
                     @Html.ActionLink("FRS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
                 </div>
                 <div class="navbar-collapse collapse">
-                    @if (userDetails.RoleID == 5)
+                    @if (userDetails.RoleID == 5 || userDetails.RoleID == 6)
                     {
                         <ul class="nav navbar-nav mr-auto">
                             <li>@Html.ActionLink("Fault List", "Index", "Home")</li>

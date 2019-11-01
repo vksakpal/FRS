@@ -33,7 +33,7 @@
                     <span>Manager</span>
                 </div>
                 <div class="col-md-9">
-                    @Html.DropDownListFor(model => model.ManagerId, Model.ManagerList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.ManagerList, "Value", "Text"), "--Select--", new { @class = "form-control"})
+                    @Html.DropDownListFor(model => model.ManagerId, Model.ManagerList == null ? Enumerable.Empty<SelectListItem>() : new SelectList(Model.ManagerList, "Value", "Text"), "--Select--", new { @class = "form-control" })
                 </div>
             </div>
 
@@ -41,7 +41,7 @@
                 <div class="col-md-3">
                     <span>Expiry Date</span>
                 </div>
-                <div class="col-md-9">  
+                <div class="col-md-9">
                     <div class='input-group date' id='ExpiryDate'>
                         <input type='text' class="form-control" id="ExpiryDate" />
                         <span class="input-group-addon datetimepicker">
@@ -67,8 +67,19 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        $("#ManagerId").prop("disabled", true);
+        $("#RoleID").change(function () {
+            if ($("#RoleID option:Selected").text() == "Developer") {
+                $("#ManagerId").prop("disabled", false);
+        }
+        else {
+                $("#ManagerId").prop("disabled", true);
+        }
+        });
+
+
         if('@Model.ExpiryDate' != "")
-        {            
+        {
             $("div#ExpiryDate").datetimepicker({
                 date: new Date('@Model.ExpiryDate'),
                 format : 'DD-MM-YYYY HH:mm'

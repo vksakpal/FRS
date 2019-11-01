@@ -229,7 +229,7 @@ else
                 }
             });
         }
-        else if ('@userDetails.RoleID' == "5") {
+        else if ('@userDetails.RoleID' == "5" || '@userDetails.RoleID' == "6") {
             columns.push({
                 "data": null, render: function (data) {
                         return "<button class='btn btn-default btnview' data-faultid=" + data.FaultID + ">View</button>";

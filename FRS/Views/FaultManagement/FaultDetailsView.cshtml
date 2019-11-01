@@ -288,7 +288,7 @@
                     <button type="button" class="btn btn-primary" id="btnUpdateFaultDeveloperPopup">Update Fault</button>
                 }
             }
-            else if (userDetails.RoleID != 5)
+            else if (userDetails.RoleID != 5 && userDetails.RoleID != 6)
             {
                 if (Model.StatusDescription.ToLower() != "closed")
                 {
