@@ -103,6 +103,7 @@ else
                 type: 'GET',
                 contentType: 'application/json',
                 data: { "faultId": faultid, "userId": userid },
+                cache: false,
                 success: function (data) {
                     if (data == true) {
                         alert("Developer assigned successfully to fault id:" + faultid);
@@ -245,6 +246,7 @@ else
                 url: "@Url.Action("GetFaultList","FaultManagement")",
                 type: "GET",
                 traditional: true,
+                cache: false,
                 data: function (d) {
                     d.status = $("#FilterStatusID").val();
                     return d;

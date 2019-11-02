@@ -45,6 +45,7 @@
             $.ajax({
                 url: '@Url.Action("AddCustomerView","Customer")',
                 type: 'GET',
+                cache: false,
                 success: function (htmlResponse) {
                     $("#dvpopup").empty();
                     $("#dvpopup").html(htmlResponse);

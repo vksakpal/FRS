@@ -44,6 +44,7 @@
             $.ajax({
                 url: '@Url.Action("AddUpdateUserView","User")',
                 type: 'GET',
+                cache: false,
                 success: function (htmlResponse) {
                     $("#dvpopup").empty();
                     $("#dvpopup").html(htmlResponse);

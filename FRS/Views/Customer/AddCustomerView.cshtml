@@ -61,8 +61,22 @@
 </div>
 
 <script type="text/javascript">
+
+    function isEmail(email) {
+  var regex = /^([a-zA-Z0-9_.+-])+\@@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+  return regex.test(email);
+}
+
     $(document).ready(function () {
         $("#btnAddCustomerPopup").click(function () {
+
+            if ($("#Email").val().trim() != '') {
+                if (!isEmail($("#Email").val().trim())) {
+                    alert("Please enter valid email address.");
+                    return false;
+                }
+            }
+
             var customer = {
                 "ID": $("#ID").val(),
                 "FirstName": $("#FirstName").val(),
@@ -76,6 +90,7 @@
                 type: "POST",
                 ContentType: 'application/json',
                 data: { "customer": customer },
+                cache: false,
                 success: function (data) {
                     if (data == true) {
                         alert("Customer details have been saved successfully.");

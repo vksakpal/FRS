@@ -177,13 +177,13 @@
                     <label for="staticEmail" class="col-sm-4 col-form-label">Fault Reporting Date:</label>
                     <div class="col-sm-8">
                         @*@if (userDetails.RoleID == 4)
-                    {*@
+                            {*@
                         @Html.TextBoxFor(model => model.FaultReportingDate, new { @class = "form-control", @readonly = true })
                         @*}
-                    else
-                    {
-                        @Html.TextBoxFor(model => model.FaultReportingDate, new { @class = "form-control" })
-                    }*@
+                            else
+                            {
+                                @Html.TextBoxFor(model => model.FaultReportingDate, new { @class = "form-control" })
+                            }*@
                     </div>
                 </div>
 
@@ -288,7 +288,7 @@
                     <button type="button" class="btn btn-primary" id="btnUpdateFaultDeveloperPopup">Update Fault</button>
                 }
             }
-            else if (userDetails.RoleID != 5 && userDetails.RoleID != 6)
+            else if (userDetails.RoleID != 5 && userDetails.RoleID != 6 && userDetails.RoleID != 3)
             {
                 if (Model.StatusDescription.ToLower() != "closed")
                 {
@@ -301,6 +301,12 @@
 </div>
 
 <script type="text/javascript">
+
+     function isEmail(email) {
+        var regex = /^([a-zA-Z0-9_.+-])+\@@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        return regex.test(email);
+     }
+
     $(document).ready(function () {
         if('@Model.FaultResolvedDate' != "")
         {
@@ -322,6 +328,14 @@
 
 
         $("#btnAddFaultPopup").click(function () {
+
+            if ($("#CustomerInfo_Email").val().trim() != '') {
+                if (!isEmail($("#CustomerInfo_Email").val().trim())) {
+                    alert("Please enter valid email address.");
+                    return false;
+                }
+            }
+
                 var faultDetails = {
                 "CustomerInfo": {
                     "FirstName": $("#CustomerInfo_FirstName").val(),
