@@ -329,10 +329,12 @@
 
         $("#btnAddFaultPopup").click(function () {
 
-            if ($("#CustomerInfo_Email").val().trim() != '') {
-                if (!isEmail($("#CustomerInfo_Email").val().trim())) {
-                    alert("Please enter valid email address.");
-                    return false;
+            if ($("#CustomerInfo_Email").val()) {
+                if ($("#CustomerInfo_Email").val().trim() != '') {
+                    if (!isEmail($("#CustomerInfo_Email").val().trim())) {
+                        alert("Please enter valid email address.");
+                        return false;
+                    }
                 }
             }
 
